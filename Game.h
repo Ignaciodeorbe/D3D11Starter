@@ -18,6 +18,10 @@ public:
 	void Draw(float deltaTime, float totalTime);
 	void OnResize();
 
+	// Helper methods added by me (Ignacio de Orbe)
+	void RefreshUI(float deltaTime);
+
+
 private:
 
 	// Initialization helper methods - feel free to customize, combine, remove, etc.
