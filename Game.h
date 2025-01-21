@@ -20,7 +20,10 @@ public:
 
 	// Helper methods added by me (Ignacio de Orbe)
 	void RefreshUI(float deltaTime);
+	void CreateUI();
 
+	// Background color will start as cornflour blue
+	float bgColor[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
 
 private:
 

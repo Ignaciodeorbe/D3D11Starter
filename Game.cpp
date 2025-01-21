@@ -262,6 +262,8 @@ void Game::Update(float deltaTime, float totalTime)
 	// Refresh the ImGui
 	RefreshUI(deltaTime);
 
+	CreateUI();
+
 	// Example input checking: Quit if the escape key is pressed
 	if (Input::KeyDown(VK_ESCAPE))
 		Window::Quit();
@@ -278,8 +280,8 @@ void Game::Draw(float deltaTime, float totalTime)
 	// - At the beginning of Game::Draw() before drawing *anything*
 	{
 		// Clear the back buffer (erase what's on screen) and depth buffer
-		const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
-		Graphics::Context->ClearRenderTargetView(Graphics::BackBufferRTV.Get(),	color);
+		//float color[4] = bgColor[];
+		Graphics::Context->ClearRenderTargetView(Graphics::BackBufferRTV.Get(),	bgColor);
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
@@ -334,7 +336,7 @@ void Game::Draw(float deltaTime, float totalTime)
 // Helper Methods
 //---------------
 
-// 
+// This refreshs the UI every frame
 void Game::RefreshUI(float deltaTime)
 {
 	// Feed fresh data to ImGui
@@ -351,5 +353,31 @@ void Game::RefreshUI(float deltaTime)
 	Input::SetMouseCapture(io.WantCaptureMouse);
 	// Show the demo window
 	ImGui::ShowDemoWindow();
+}
+
+// Creates a UI holding general data and some customizations for the window
+void Game::CreateUI()
+{
+	// Variables
+	float framerate = ImGui::GetIO().Framerate;
+	float windowWidth = Window::Width();
+	float windowHeight = Window::Height();
+
+
+	// Create a ImGui window to display UI elements
+	ImGui::Begin("UI Window");
+
+	// Displays the fps
+	ImGui::Text("Framerate - %f fps", framerate);
+
+	// Displays the window width and height
+	ImGui::Text("Width - %f px : Height - %f px", windowWidth, windowHeight);
+
+	XMFLOAT4 color(1.0f, 0.0f, 0.5f, 1.0f);
+	
+	ImGui::ColorEdit4("RGBA color editor", &color.x);
+
+
+	ImGui::End();
 }
 
