@@ -373,9 +373,8 @@ void Game::CreateUI()
 	// Displays the window width and height
 	ImGui::Text("Width - %f px : Height - %f px", windowWidth, windowHeight);
 
-	XMFLOAT4 color(1.0f, 0.0f, 0.5f, 1.0f);
-	
-	ImGui::ColorEdit4("RGBA color editor", &color.x);
+	// Allows user to pick and change the color
+	ImGui::ColorEdit4("RGBA background color picker", bgColor);
 
 
 	ImGui::End();
