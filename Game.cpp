@@ -11,6 +11,7 @@
 #include "ImGui/imgui_impl_dx11.h"
 #include "ImGui/imgui_impl_win32.h"
 
+
 // Needed for a helper function to load pre-compiled shader files
 #pragma comment(lib, "d3dcompiler.lib")
 #include <d3dcompiler.h>
@@ -351,8 +352,7 @@ void Game::RefreshUI(float deltaTime)
 	// Determine new input capture
 	Input::SetKeyboardCapture(io.WantCaptureKeyboard);
 	Input::SetMouseCapture(io.WantCaptureMouse);
-	// Show the demo window
-	ImGui::ShowDemoWindow();
+
 }
 
 // Creates a UI holding general data and some customizations for the window
@@ -362,6 +362,7 @@ void Game::CreateUI()
 	float framerate = ImGui::GetIO().Framerate;
 	float windowWidth = Window::Width();
 	float windowHeight = Window::Height();
+
 
 
 	// Create a ImGui window to display UI elements
@@ -375,6 +376,77 @@ void Game::CreateUI()
 
 	// Allows user to pick and change the color
 	ImGui::ColorEdit4("RGBA background color picker", bgColor);
+
+	// Button to enable/disable the demo window
+	if (ImGui::Checkbox("Show Demo Window", &showDemoWindow)){}
+	
+
+	// If true, then show the demo window
+	if (showDemoWindow)
+	{
+		ImGui::ShowDemoWindow();
+	}
+
+	// Increases/decreases font size by incrementing/decrementing by 0.1 when the button is clicked
+	if (ImGui::Button("Increase Font"))
+	{
+		fontSize += 0.1f; 
+	}
+	if (ImGui::Button("Decrease Font"))
+	{
+		fontSize -= 0.1f; 
+	}
+
+
+	ImGui::Text("Press + or - to increase/decrease font size");
+
+	// Press equals key (Plus) to increase font size
+	if (ImGui::IsKeyDown(ImGuiKey_Equal))
+	{
+		fontSize += 0.005f;
+
+	}
+
+	// Press Minus key to decrease font size
+	if (ImGui::IsKeyDown(ImGuiKey_Minus))
+	{
+		fontSize -= 0.005f;
+
+	}
+
+	// Cap the font size at 0.1 to avoid the font size from becoming negative
+	if (fontSize < 0.1f)
+	{
+		fontSize += 0.01f;
+	}
+
+	// Adjust the font size
+	ImGui::SetWindowFontScale(fontSize);
+	
+	// Starts/pauses the stop watch
+	if (ImGui::IsKeyPressed(ImGuiKey_Space, true))
+	{
+		stopwatch = !stopwatch;
+	}
+
+	// Adds to deltatime to time to track the amount of time since the stopwatch was started
+	if (stopwatch)
+	{
+		time += ImGui::GetIO().DeltaTime;
+
+	}
+
+	// Resets the stop watch
+	if (ImGui::IsKeyPressed(ImGuiKey_R, true))
+	{
+		stopwatch = false;
+		time = 0.0f;
+	}
+
+	// Stopwatch instructions and display
+	ImGui::Text("Press SPACE to START and PAUSE the stopwatch");
+	ImGui::Text("Press R to reset");
+	ImGui::Text("Stopwatch - %f Seconds", time);
 
 
 	ImGui::End();
