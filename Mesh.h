@@ -27,9 +27,11 @@ public:
 
 private:
 
-
+	// Buffers
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+
+	//Index and vertex count
 	int indexCount;
 	int vertexCount;
 };
