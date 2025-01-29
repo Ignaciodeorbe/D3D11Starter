@@ -2,6 +2,11 @@
 
 #include <d3d11.h>
 #include <wrl/client.h>
+#include <memory>
+
+#include "Mesh.h"
+#include <vector>
+
 
 class Game
 {
@@ -28,6 +33,9 @@ public:
 	float fontSize = 1.0f;
 	float time;
 	bool stopwatch = false;
+
+	// Declaration for Mesh class objects
+	std::shared_ptr<Mesh> originalTriangle;
 
 private:
 
