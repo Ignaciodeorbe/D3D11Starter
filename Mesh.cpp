@@ -14,15 +14,15 @@ Mesh::Mesh(Vertex* vertices, unsigned int indices[])
 	vbd.MiscFlags = 0;  
 	vbd.StructureByteStride = 0;
 
-		
+	// Creating the struct with the initial data for the vertex buffer
 	D3D11_SUBRESOURCE_DATA initialVertexData = {};
 	initialVertexData.pSysMem = vertices; 
 
-		
+	// Create Vertex Buffer with the initail data
 	Graphics::Device->CreateBuffer(&vbd, &initialVertexData, vertexBuffer.GetAddressOf());
 	
 
-	
+	// Creating the Index Buffer
 	D3D11_BUFFER_DESC ibd = {};
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;	
 	ibd.ByteWidth = sizeof(unsigned int) * 3;	
@@ -31,11 +31,11 @@ Mesh::Mesh(Vertex* vertices, unsigned int indices[])
 	ibd.MiscFlags = 0;
 	ibd.StructureByteStride = 0;
 
-		
+	// Creating the struct with the initial data for the index buffer
 	D3D11_SUBRESOURCE_DATA initialIndexData = {};
 	initialIndexData.pSysMem = indices; 
 
-		
+	// Create index buffer with the initial data
 	Graphics::Device->CreateBuffer(&ibd, &initialIndexData, indexBuffer.GetAddressOf());
 	
 }
@@ -76,11 +76,13 @@ int Mesh::GetVertexCount()
 
 void Mesh::Draw()
 {
+	// Set buffers in the input assembler
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	Graphics::Context->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 	Graphics::Context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
+	// Have DirectX draw 
 	Graphics::Context->DrawIndexed(
 		3,     
 		0,     
