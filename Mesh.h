@@ -10,7 +10,7 @@ class Mesh
 public:
 
 	// Constructor
-	Mesh(Vertex *vertices, unsigned int indices[]);
+	Mesh(Vertex *vertices, int vertexCount, unsigned int* indices, int indexCount);
 
 	// Destructor
 	~Mesh();

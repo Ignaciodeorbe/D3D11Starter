@@ -2,13 +2,14 @@
 #include <memory>
 
 
-Mesh::Mesh(Vertex* vertices, unsigned int indices[])
+Mesh::Mesh(Vertex* vertices, int vertexCount, unsigned int* indices, int indexCount)
+	: vertexCount(vertexCount), indexCount(indexCount)
 {
 	
 	// Creating the vertex buffer
 	D3D11_BUFFER_DESC vbd = {};
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;	
-	vbd.ByteWidth = sizeof(Vertex) * 3;       
+	vbd.ByteWidth = sizeof(Vertex) * vertexCount;
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; 
 	vbd.CPUAccessFlags = 0;	
 	vbd.MiscFlags = 0;  
@@ -25,7 +26,7 @@ Mesh::Mesh(Vertex* vertices, unsigned int indices[])
 	// Creating the Index Buffer
 	D3D11_BUFFER_DESC ibd = {};
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;	
-	ibd.ByteWidth = sizeof(unsigned int) * 3;	
+	ibd.ByteWidth = sizeof(unsigned int) * indexCount;
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;	
 	ibd.CPUAccessFlags = 0;	
 	ibd.MiscFlags = 0;
@@ -84,7 +85,7 @@ void Mesh::Draw()
 
 	// Have DirectX draw 
 	Graphics::Context->DrawIndexed(
-		3,     
+		indexCount,
 		0,     
 		0);    
 }

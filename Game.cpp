@@ -190,7 +190,7 @@ void Game::CreateGeometry()
 
 	// Initalization of actual triangle
 	//originalTriangle = std::make_shared<Mesh>(vertices, indices);
-	meshes.push_back(std::make_shared<Mesh>(vertices, indices));
+	meshes.push_back(std::make_shared<Mesh>(vertices, sizeof(vertices), indices, sizeof(indices)));
 	
 
 }
