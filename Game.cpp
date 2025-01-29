@@ -180,16 +180,17 @@ void Game::CreateGeometry()
 	// Vertices positions
 	Vertex vertices[] =
 	{
-		{ XMFLOAT3(+0.0f, +0.5f, +0.0f), red },
+		{ XMFLOAT3(+0.5f, +0.5f, +0.0f), red },
 		{ XMFLOAT3(+0.5f, -0.5f, +0.0f), blue },
 		{ XMFLOAT3(-0.5f, -0.5f, +0.0f), green },
+		{ XMFLOAT3(-0.5f, +0.5f, +0.0f), blue },
+
 	};
 
-	// Indices
-	unsigned int indices[] = { 0, 1, 2 };
+	// Indices, order the vertices in the way that they will be drawn 
+	unsigned int indices[] = { 0, 1, 2, 3, 0, 2 }; // Each triangle needs 3 vertices, you can reuse them if needed
 
 	// Initalization of actual triangle
-	//originalTriangle = std::make_shared<Mesh>(vertices, indices);
 	meshes.push_back(std::make_shared<Mesh>(vertices, sizeof(vertices), indices, sizeof(indices)));
 	
 
