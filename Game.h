@@ -35,7 +35,9 @@ public:
 	bool stopwatch = false;
 
 	// Declaration for Mesh class objects
-	std::shared_ptr<Mesh> originalTriangle;
+	//std::shared_ptr<Mesh> originalTriangle;
+	std::vector<std::shared_ptr<Mesh>> meshes;
+
 
 private:
 

@@ -13,7 +13,7 @@
 
 #include "Mesh.h"
 #include <memory>
-
+#include <vector>
 
 
 
@@ -171,26 +171,28 @@ void Game::CreateGeometry()
 	//--------------------
 
 	// Orignial triangle
+	
+	// Colors for the vertices
+	XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	// Vertices positions
+	Vertex vertices[] =
 	{
-		// Colors for the vertices
-		XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-		XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-		XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+		{ XMFLOAT3(+0.0f, +0.5f, +0.0f), red },
+		{ XMFLOAT3(+0.5f, -0.5f, +0.0f), blue },
+		{ XMFLOAT3(-0.5f, -0.5f, +0.0f), green },
+	};
 
-		// Vertices positions
-		Vertex vertices[] =
-		{
-			{ XMFLOAT3(+0.0f, +0.5f, +0.0f), red },
-			{ XMFLOAT3(+0.5f, -0.5f, +0.0f), blue },
-			{ XMFLOAT3(-0.5f, -0.5f, +0.0f), green },
-		};
+	// Indices
+	unsigned int indices[] = { 0, 1, 2 };
 
-		// Indices
-		unsigned int indices[] = { 0, 1, 2 };
+	// Initalization of actual triangle
+	//originalTriangle = std::make_shared<Mesh>(vertices, indices);
+	meshes.push_back(std::make_shared<Mesh>(vertices, indices));
+	
 
-		// Initalization of actual triangle
-		originalTriangle = std::make_shared<Mesh>(vertices, indices);
-	}
 }
 
 
@@ -235,7 +237,10 @@ void Game::Draw(float deltaTime, float totalTime)
 	}
 
 	// Draw Geometry
-	originalTriangle->Draw();
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		meshes[i]->Draw();
+	}
 
 	ImGui::Render(); // Turns this frame’s UI into renderable triangles
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); // Draws it to the screen
