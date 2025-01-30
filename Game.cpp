@@ -214,9 +214,9 @@ void Game::CreateGeometry()
 	unsigned int indicesShape3[] = { 0, 1, 2,};
 
 	// Initalization of actual shape
-	meshes.push_back(std::make_shared<Mesh>(verticesShape1, sizeof(verticesShape1) / sizeof(verticesShape1[0]), indicesShape1, sizeof(indicesShape1) / sizeof(indicesShape1[0])));
-	meshes.push_back(std::make_shared<Mesh>(verticesShape2, sizeof(verticesShape2) / sizeof(verticesShape2[0]), indicesShape2, sizeof(indicesShape2) / sizeof(indicesShape2[0])));
-	meshes.push_back(std::make_shared<Mesh>(verticesShape3, sizeof(verticesShape3) / sizeof(verticesShape3[0]), indicesShape3, sizeof(indicesShape3) / sizeof(indicesShape3[0])));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape1, static_cast<unsigned int>(sizeof(verticesShape1) / sizeof(verticesShape1[0])), indicesShape1, static_cast<unsigned int>(sizeof(indicesShape1) / sizeof(indicesShape1[0]))));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape2, static_cast<unsigned int>(sizeof(verticesShape2) / sizeof(verticesShape2[0])), indicesShape2, static_cast<unsigned int>(sizeof(indicesShape2) / sizeof(indicesShape2[0]))));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape3, static_cast<unsigned int>(sizeof(verticesShape3) / sizeof(verticesShape3[0])), indicesShape3, static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0]))));
 
 
 }
