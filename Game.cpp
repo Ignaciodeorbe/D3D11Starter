@@ -169,30 +169,58 @@ void Game::CreateGeometry()
 	//--------------------
 	// Initializing Shapes
 	//--------------------
-
-	// Orignial triangle
 	
 	// Colors for the vertices
 	XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 	XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	XMFLOAT4 purple = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	XMFLOAT4 orange = XMFLOAT4(1.0f, 0.6f, 0.0f, 1.0f);
+
+
 
 	// Vertices positions
-	Vertex vertices[] =
+	Vertex verticesShape1[] =
 	{
-		{ XMFLOAT3(+0.5f, +0.5f, +0.0f), red },
-		{ XMFLOAT3(+0.5f, -0.5f, +0.0f), blue },
-		{ XMFLOAT3(-0.5f, -0.5f, +0.0f), green },
-		{ XMFLOAT3(-0.5f, +0.5f, +0.0f), blue },
+		{ XMFLOAT3(+0.25f, +0.25f, +0.0f), red },
+		{ XMFLOAT3(+0.25f, -0.25f, +0.0f), blue },
+		{ XMFLOAT3(-0.25f, -0.25f, +0.0f), green },
+		{ XMFLOAT3(-0.25f, +0.25f, +0.0f), blue },
+
+	};
+
+	// Vertices positions
+	Vertex verticesShape2[] =
+	{
+		{ XMFLOAT3(+0.75f, +0.75f, +0.0f), red },
+		{ XMFLOAT3(+0.9f, -0.0f, +0.0f), orange },
+		{ XMFLOAT3(+0.6f, -0.0f, +0.0f), orange },
+		{ XMFLOAT3(+0.75f, -0.75f, +0.0f), purple },
+
+	};
+
+	// Vertices positions
+	Vertex verticesShape3[] =
+	{
+		{ XMFLOAT3(-0.7f, +0.75f, +0.0f), purple },
+		{ XMFLOAT3(-0.7f, -0.2f, +0.0f), orange },
+		{ XMFLOAT3(-0.9f, -0.75f, +0.0f), purple },
+		{ XMFLOAT3(-0.9f, +0.6f, +0.0f), blue },
 
 	};
 
 	// Indices, order the vertices in the way that they will be drawn 
-	unsigned int indices[] = { 0, 1, 2, 3, 0, 2 }; // Each triangle needs 3 vertices, you can reuse them if needed
+	unsigned int indicesShape1[] = { 0, 1, 2, 3, 0, 2 }; // Each triangle needs 3 vertices, you can reuse them if needed
+	unsigned int indicesShape2[] = { 0, 1, 2, 2, 1, 3 }; 
+	unsigned int indicesShape3[] = { 0, 1, 2, 2, 3, 0 };
 
-	// Initalization of actual triangle
-	meshes.push_back(std::make_shared<Mesh>(vertices, sizeof(vertices), indices, sizeof(indices)));
-	
+
+
+	// Initalization of actual shape
+	meshes.push_back(std::make_shared<Mesh>(verticesShape1, sizeof(verticesShape1), indicesShape1, sizeof(indicesShape1)));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape2, sizeof(verticesShape2), indicesShape2, sizeof(indicesShape2)));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape3, sizeof(verticesShape3), indicesShape3, sizeof(indicesShape3)));
+
 
 }
 
@@ -291,8 +319,8 @@ void Game::CreateUI()
 {
 	// Variables
 	float framerate = ImGui::GetIO().Framerate;
-	float windowWidth = Window::Width();
-	float windowHeight = Window::Height();
+	float windowWidth = static_cast<float>(Window::Width());
+	float windowHeight = static_cast<float>(Window::Height());
 
 
 
