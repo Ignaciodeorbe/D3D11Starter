@@ -204,22 +204,19 @@ void Game::CreateGeometry()
 	{
 		{ XMFLOAT3(-0.7f, +0.75f, +0.0f), purple },
 		{ XMFLOAT3(-0.7f, -0.2f, +0.0f), orange },
-		{ XMFLOAT3(-0.9f, -0.75f, +0.0f), purple },
-		{ XMFLOAT3(-0.9f, +0.6f, +0.0f), blue },
+		{ XMFLOAT3(-0.9f, -0.75f, +0.0f), blue },
 
 	};
 
 	// Indices, order the vertices in the way that they will be drawn 
 	unsigned int indicesShape1[] = { 0, 1, 2, 3, 0, 2 }; // Each triangle needs 3 vertices, you can reuse them if needed
 	unsigned int indicesShape2[] = { 0, 1, 2, 2, 1, 3 }; 
-	unsigned int indicesShape3[] = { 0, 1, 2, 2, 3, 0 };
-
-
+	unsigned int indicesShape3[] = { 0, 1, 2,};
 
 	// Initalization of actual shape
-	meshes.push_back(std::make_shared<Mesh>(verticesShape1, sizeof(verticesShape1), indicesShape1, sizeof(indicesShape1)));
-	meshes.push_back(std::make_shared<Mesh>(verticesShape2, sizeof(verticesShape2), indicesShape2, sizeof(indicesShape2)));
-	meshes.push_back(std::make_shared<Mesh>(verticesShape3, sizeof(verticesShape3), indicesShape3, sizeof(indicesShape3)));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape1, sizeof(verticesShape1) / sizeof(verticesShape1[0]), indicesShape1, sizeof(indicesShape1) / sizeof(indicesShape1[0])));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape2, sizeof(verticesShape2) / sizeof(verticesShape2[0]), indicesShape2, sizeof(indicesShape2) / sizeof(indicesShape2[0])));
+	meshes.push_back(std::make_shared<Mesh>(verticesShape3, sizeof(verticesShape3) / sizeof(verticesShape3[0]), indicesShape3, sizeof(indicesShape3) / sizeof(indicesShape3[0])));
 
 
 }
@@ -327,85 +324,112 @@ void Game::CreateUI()
 	// Create a ImGui window to display UI elements
 	ImGui::Begin("UI Window");
 
-	// Displays the fps
-	ImGui::Text("Framerate - %f fps", framerate);
-
-	// Displays the window width and height
-	ImGui::Text("Width - %f px : Height - %f px", windowWidth, windowHeight);
-
-	// Allows user to pick and change the color
-	ImGui::ColorEdit4("RGBA background color picker", bgColor);
-
-	// Button to enable/disable the demo window
-	if (ImGui::Checkbox("Show Demo Window", &showDemoWindow)){}
-	
-
-	// If true, then show the demo window
-	if (showDemoWindow)
+	// Expandable/collapasble section for orginization
+	if (ImGui::CollapsingHeader("App Details"))
 	{
-		ImGui::ShowDemoWindow();
+		// Displays the fps
+		ImGui::Text("Framerate - %f fps", framerate);
+
+		// Displays the window width and height
+		ImGui::Text("Width - %f px : Height - %f px", windowWidth, windowHeight);
+
+		// Allows user to pick and change the color
+		ImGui::ColorEdit4("RGBA background color picker", bgColor);
+
+		// Button to enable/disable the demo window
+		if (ImGui::Checkbox("Show Demo Window", &showDemoWindow)){}
+		
+
+		// If true, then show the demo window
+		if (showDemoWindow)
+		{
+			ImGui::ShowDemoWindow();
+		}
+
+		// Increases/decreases font size by incrementing/decrementing by 0.1 when the button is clicked
+		if (ImGui::Button("Increase Font"))
+		{
+			fontSize += 0.1f; 
+		}
+		if (ImGui::Button("Decrease Font"))
+		{
+			fontSize -= 0.1f; 
+		}
+
+
+		ImGui::Text("Press + or - to increase/decrease font size");
+
+		// Press equals key (Plus) to increase font size
+		if (ImGui::IsKeyDown(ImGuiKey_Equal))
+		{
+			fontSize += 0.005f;
+
+		}
+
+		// Press Minus key to decrease font size
+		if (ImGui::IsKeyDown(ImGuiKey_Minus))
+		{
+			fontSize -= 0.005f;
+
+		}
+
+		// Cap the font size at 0.1 to avoid the font size from becoming negative
+		if (fontSize < 0.1f)
+		{
+			fontSize += 0.01f;
+		}
+
+		// Adjust the font size
+		ImGui::SetWindowFontScale(fontSize);
+		
+		// Starts/pauses the stop watch
+		if (ImGui::IsKeyPressed(ImGuiKey_Space, true))
+		{
+			stopwatch = !stopwatch;
+		}
+
+		// Adds to deltatime to time to track the amount of time since the stopwatch was started
+		if (stopwatch)
+		{
+			time += ImGui::GetIO().DeltaTime;
+
+		}
+
+		// Resets the stop watch
+		if (ImGui::IsKeyPressed(ImGuiKey_R, true))
+		{
+			stopwatch = false;
+			time = 0.0f;
+		}
+
+		// Stopwatch instructions and display
+		ImGui::Text("Press SPACE to START and PAUSE the stopwatch");
+		ImGui::Text("Press R to reset");
+		ImGui::Text("Stopwatch - %f Seconds", time);
+		
 	}
 
-	// Increases/decreases font size by incrementing/decrementing by 0.1 when the button is clicked
-	if (ImGui::Button("Increase Font"))
+	// Displays mesh useful info
+	if (ImGui::CollapsingHeader("Mesh Information"))
 	{
-		fontSize += 0.1f; 
-	}
-	if (ImGui::Button("Decrease Font"))
-	{
-		fontSize -= 0.1f; 
-	}
+		ImGui::Indent(20.0f); // Indent to make the data more organized
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			// Creating a mesh label because I don't have names for my meshes
+			std::string meshLabel = "Mesh " + std::to_string(i + 1);
 
+			// Shows the basic mesh info for each mesh displayed on screen
+			if (ImGui::CollapsingHeader(meshLabel.c_str()))
+			{
+				ImGui::Text("Triangles - %d", meshes[i]->GetIndexCount() / 3);
+				ImGui::Text("Vertices - %d", meshes[i]->GetVertexCount());
+				ImGui::Text("Indices - %d", meshes[i]->GetIndexCount());
 
-	ImGui::Text("Press + or - to increase/decrease font size");
+			}
+		}
 
-	// Press equals key (Plus) to increase font size
-	if (ImGui::IsKeyDown(ImGuiKey_Equal))
-	{
-		fontSize += 0.005f;
-
-	}
-
-	// Press Minus key to decrease font size
-	if (ImGui::IsKeyDown(ImGuiKey_Minus))
-	{
-		fontSize -= 0.005f;
 
 	}
-
-	// Cap the font size at 0.1 to avoid the font size from becoming negative
-	if (fontSize < 0.1f)
-	{
-		fontSize += 0.01f;
-	}
-
-	// Adjust the font size
-	ImGui::SetWindowFontScale(fontSize);
-	
-	// Starts/pauses the stop watch
-	if (ImGui::IsKeyPressed(ImGuiKey_Space, true))
-	{
-		stopwatch = !stopwatch;
-	}
-
-	// Adds to deltatime to time to track the amount of time since the stopwatch was started
-	if (stopwatch)
-	{
-		time += ImGui::GetIO().DeltaTime;
-
-	}
-
-	// Resets the stop watch
-	if (ImGui::IsKeyPressed(ImGuiKey_R, true))
-	{
-		stopwatch = false;
-		time = 0.0f;
-	}
-
-	// Stopwatch instructions and display
-	ImGui::Text("Press SPACE to START and PAUSE the stopwatch");
-	ImGui::Text("Press R to reset");
-	ImGui::Text("Stopwatch - %f Seconds", time);
 
 
 	ImGui::End();
