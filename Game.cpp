@@ -84,9 +84,6 @@ void Game::Initialize()
 	//ImGui::StyleColorsLight();
 	//ImGui::StyleColorsClassic();
 
-
-	
-	
 }
 
 
@@ -278,13 +275,13 @@ void Game::Draw(float deltaTime, float totalTime)
 	}
 
 
-	VertexShaderData vsData;
-	vsData.tint = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
-	vsData.offset = XMFLOAT3(0.95f, 0.0f, 0.0f);
+	VertexShaderData vertexShaderData;
+	vertexShaderData.tint = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
+	vertexShaderData.offset = XMFLOAT3(0.25f, 0.0f, 0.0f);
 
 	D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
 	Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
-	memcpy(mappedBuffer.pData, &vsData, sizeof(vsData));
+	memcpy(mappedBuffer.pData, &vertexShaderData, sizeof(vertexShaderData));
 	Graphics::Context->Unmap(constantBuffer.Get(), 0);
 
 	Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
