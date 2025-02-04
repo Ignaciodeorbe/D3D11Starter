@@ -1,8 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
 
-
-struct BufferStruct
+// C++ struct that matches the layout of the shaders cbuffer
+struct VertexShaderData
 {
 	DirectX::XMFLOAT4 tint;
 	DirectX::XMFLOAT3 offset;

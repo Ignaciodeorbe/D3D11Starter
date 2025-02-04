@@ -14,6 +14,7 @@
 #include "Mesh.h"
 #include <memory>
 #include <vector>
+#include "BufferStructs.h"
 
 
 
@@ -23,6 +24,8 @@
 
 // For the DirectX Math library
 using namespace DirectX;
+
+Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
 
 // --------------------------------------------------------
 // Called once per program, after the window and graphics API
@@ -35,6 +38,7 @@ void Game::Initialize()
 	//  - You'll be expanding and/or replacing these later
 	LoadShaders();
 	CreateGeometry();
+
 
 	// Set initial graphics API state
 	//  - These settings persist until we change them
@@ -58,6 +62,17 @@ void Game::Initialize()
 		Graphics::Context->PSSetShader(pixelShader.Get(), 0, 0);
 	}
 
+	// Making the constant buffer size a multiple of 16
+	unsigned int constantBufferSize = sizeof(VertexShaderData);
+	constantBufferSize = (constantBufferSize + 15) / 16 * 16;
+
+	// Describe the constant buffer
+	D3D11_BUFFER_DESC cbDesc = {}; // Sets struct to all zeros
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.ByteWidth = constantBufferSize; 
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	Graphics::Device->CreateBuffer(&cbDesc, 0, constantBuffer.GetAddressOf());
 
 	// Initialize ImGui itself & platform/renderer backends
 	IMGUI_CHECKVERSION();
@@ -261,6 +276,18 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearRenderTargetView(Graphics::BackBufferRTV.Get(),	bgColor);
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
+
+
+	VertexShaderData vsData;
+	vsData.tint = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
+	vsData.offset = XMFLOAT3(0.95f, 0.0f, 0.0f);
+
+	D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
+	Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
+	memcpy(mappedBuffer.pData, &vsData, sizeof(vsData));
+	Graphics::Context->Unmap(constantBuffer.Get(), 0);
+
+	Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
 	// Draw Geometry
 	for (int i = 0; i < meshes.size(); i++)

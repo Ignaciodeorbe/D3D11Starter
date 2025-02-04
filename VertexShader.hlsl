@@ -43,6 +43,7 @@ VertexToPixel main( VertexShaderInput input )
 	// Set up output struct
 	VertexToPixel output;
 
+
 	// Here we're essentially passing the input position directly through to the next
 	// stage (rasterizer), though it needs to be a 4-component vector now.  
 	// - To be considered within the bounds of the screen, the X and Y components 
