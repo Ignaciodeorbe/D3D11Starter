@@ -436,7 +436,7 @@ void Game::CreateUI()
 		ImGui::Text("Stopwatch - %f Seconds", time);
 		
 		// Color picker for mesh tinit and UI element to drag the meshes
-		ImGui::DragFloat2("Shader Offset", &translation.x, 0.001f);			 
+		ImGui::DragFloat3("Shader Offset", &translation.x, 0.001f);			 
 		ImGui::ColorEdit4("RGBA mesh tint color picker", &colorTint.x);
 	}
 

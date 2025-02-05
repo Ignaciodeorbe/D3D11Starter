@@ -31,8 +31,8 @@ struct VertexToPixel
 	float4 color			: COLOR;        // RGBA color
 };
 
-// HLSL cbuffer
-cbuffer ConstantBuffer : register(b0)
+// HLSL cbuffer			
+cbuffer ConstantBuffer : register(b0) // The slot that the buffer is binded too (in VSSetConstantBuffers)
 {
     float4 tint; 
     float3 offset; 
