@@ -67,7 +67,7 @@ void Game::Initialize()
 	constantBufferSize = (constantBufferSize + 15) / 16 * 16;
 
 	// Describe the constant buffer
-	D3D11_BUFFER_DESC cbDesc = {}; // Sets struct to all zeros
+	D3D11_BUFFER_DESC cbDesc = {}; 
 	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbDesc.ByteWidth = constantBufferSize; 
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -84,6 +84,9 @@ void Game::Initialize()
 	//ImGui::StyleColorsLight();
 	//ImGui::StyleColorsClassic();
 
+	// Giving the offset and tint some default values
+	translation = XMFLOAT3(0.25f, 0.0f, 0.0f);
+	colorTint = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
 }
 
 
@@ -274,11 +277,12 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
-
+	// Adding tinr and offset to meshs 
 	VertexShaderData vertexShaderData;
-	vertexShaderData.tint = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
-	vertexShaderData.offset = XMFLOAT3(0.25f, 0.0f, 0.0f);
+	vertexShaderData.tint = colorTint;
+	vertexShaderData.offset = translation;
 
+	// Copy data to the constant buffer
 	D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
 	Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
 	memcpy(mappedBuffer.pData, &vertexShaderData, sizeof(vertexShaderData));
@@ -431,6 +435,9 @@ void Game::CreateUI()
 		ImGui::Text("Press R to reset");
 		ImGui::Text("Stopwatch - %f Seconds", time);
 		
+		// Color picker for mesh tinit and UI element to drag the meshes
+		ImGui::DragFloat2("Shader Offset", &translation.x, 0.001f);			 
+		ImGui::ColorEdit4("RGBA mesh tint color picker", &colorTint.x);
 	}
 
 	// Displays mesh useful info

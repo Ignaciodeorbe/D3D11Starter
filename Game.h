@@ -38,6 +38,11 @@ public:
 	//std::shared_ptr<Mesh> originalTriangle;
 	std::vector<std::shared_ptr<Mesh>> meshes;
 
+	//
+
+	DirectX::XMFLOAT4 colorTint;
+	DirectX::XMFLOAT3 translation;
+
 
 private:
 
