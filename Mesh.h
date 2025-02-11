@@ -7,6 +7,18 @@
 
 class Mesh
 {
+
+private:
+
+	// Buffers
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+
+	//Index and vertex count
+	int indexCount;
+	int vertexCount;
+
+
 public:
 
 	// Constructor
@@ -24,14 +36,4 @@ public:
 	// Method for drawing
 	void Draw();
 
-
-private:
-
-	// Buffers
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
-
-	//Index and vertex count
-	int indexCount;
-	int vertexCount;
 };
