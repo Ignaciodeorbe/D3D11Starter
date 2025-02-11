@@ -1,32 +1,31 @@
 #include "Transform.h"
 
 Transform::Transform()
+	: position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 0.0f), scale(0.0f, 0.0f, 0.0f)
 {
 }
 
-void Transform::SetPosition(float x, float y, float z)
-{
-}
+//--------
+// Setters
+// -------
 
-void Transform::SetPosition(DirectX::XMFLOAT3 position)
-{
-}
+// Position setters
+void Transform::SetPosition(float x, float y, float z) { position = { x, y, z }; }
+void Transform::SetPosition(DirectX::XMFLOAT3 pos) { position = pos; }
 
-void Transform::SetRotation(float pitch, float yaw, float roll)
-{
-}
+// Rotation setters
+void Transform::SetRotation(float pitch, float yaw, float roll) { rotation = { pitch, yaw, roll }; }
+void Transform::SetRotation(DirectX::XMFLOAT3 rot) { rotation = rot; }
 
-void Transform::SetRotation(DirectX::XMFLOAT3 rotation)
-{
-}
 
-void Transform::SetScale(float x, float y, float z)
-{
-}
+void Transform::SetScale(float x, float y, float z) { scale = { x, y, z }; }
+void Transform::SetScale(DirectX::XMFLOAT3 scl) { scale = scl; }
 
-void Transform::SetScale(DirectX::XMFLOAT3 scale)
-{
-}
+
+
+//--------
+// Getters
+// -------
 
 DirectX::XMFLOAT3 Transform::GetPosition()
 {
@@ -52,6 +51,11 @@ DirectX::XMFLOAT4X4 Transform::GetWorldInverseTransposeMatrix()
 {
 	return DirectX::XMFLOAT4X4();
 }
+
+
+//-------------
+// Transformers
+//-------------
 
 void Transform::MoveAbsolute(float x, float y, float z)
 {
