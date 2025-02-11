@@ -5,6 +5,6 @@
 struct VertexShaderData
 {
 	DirectX::XMFLOAT4 tint;
-	DirectX::XMFLOAT3 offset;
+	DirectX::XMFLOAT4X4 world;
 
 };

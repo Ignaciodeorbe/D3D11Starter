@@ -280,7 +280,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	// Adding tinr and offset to meshs 
 	VertexShaderData vertexShaderData;
 	vertexShaderData.tint = colorTint;
-	vertexShaderData.offset = translation;
+	vertexShaderData.world = translation;
 
 	// Copy data to the constant buffer
 	D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
