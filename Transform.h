@@ -14,7 +14,7 @@ private:
 
 	DirectX::XMFLOAT4X4 worldMatrix;
 
-	bool dirty = true;
+	bool dirty;
 
 	//--------
 	// Methods
