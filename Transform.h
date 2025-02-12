@@ -13,6 +13,7 @@ private:
 	DirectX::XMFLOAT3 scale;
 
 	DirectX::XMFLOAT4X4 worldMatrix;
+	DirectX::XMFLOAT4X4 worldInverseTranspose;
 
 	bool dirty;
 
@@ -52,7 +53,6 @@ public:
 	
 	// World matrix getters
 	DirectX::XMFLOAT4X4 GetWorldMatrix();
-	DirectX::XMFLOAT4X4 GetWorldInverseTransposeMatrix();
 
 	//-------------
 	// Transformers

@@ -6,12 +6,15 @@ using namespace DirectX;
 Transform::Transform()
 	: position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), dirty(true)
 {
-	// Storing the identity matrix as the world matrix
+	// Storing the identity matrix as the world matrix and inverse matrix
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
-
+	XMStoreFloat4x4(&worldInverseTranspose, XMMatrixIdentity());
 
 }
 
+/// <summary>
+/// Updates the world martix based on any tranformations made to it
+/// </summary>
 void Transform::UpdateWorldMatrix()
 {
 	if (dirty)
@@ -21,8 +24,9 @@ void Transform::UpdateWorldMatrix()
 			XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) * 
 			XMMatrixTranslation(position.x, position.y, position.z);
 
-		// Storing the updated world matrix 
+		// Storing the updated world matrix and its inverse transpose
 		XMStoreFloat4x4(&worldMatrix, world);
+		XMStoreFloat4x4(&worldInverseTranspose, XMMatrixTranspose(XMMatrixInverse(nullptr, world)));
 
 		dirty = false;
 	}
