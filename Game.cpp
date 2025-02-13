@@ -229,10 +229,27 @@ void Game::CreateGeometry()
 	unsigned int indicesShape3[] = { 0, 1, 2,};
 
 	// Initalization of actual shape
-	entities.push_back(std::make_shared<Mesh>(verticesShape1, static_cast<unsigned int>(sizeof(verticesShape1) / sizeof(verticesShape1[0])), indicesShape1, static_cast<unsigned int>(sizeof(indicesShape1) / sizeof(indicesShape1[0]))));
-	entities.push_back(std::make_shared<Mesh>(verticesShape2, static_cast<unsigned int>(sizeof(verticesShape2) / sizeof(verticesShape2[0])), indicesShape2, static_cast<unsigned int>(sizeof(indicesShape2) / sizeof(indicesShape2[0]))));
-	entities.push_back(std::make_shared<Mesh>(verticesShape3, static_cast<unsigned int>(sizeof(verticesShape3) / sizeof(verticesShape3[0])), indicesShape3, static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0]))));
+	std::shared_ptr<Mesh> mesh1 = std::make_shared<Mesh>(verticesShape1, 
+		static_cast<unsigned int>(sizeof(verticesShape1) / sizeof(verticesShape1[0])), 
+		indicesShape1, 
+		static_cast<unsigned int>(sizeof(indicesShape1) / sizeof(indicesShape1[0])));
 
+	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(verticesShape2,
+		static_cast<unsigned int>(sizeof(verticesShape2) / sizeof(verticesShape2[0])),
+		indicesShape2,
+		static_cast<unsigned int>(sizeof(indicesShape2) / sizeof(indicesShape2[0])));
+
+	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(verticesShape3,
+		static_cast<unsigned int>(sizeof(verticesShape3) / sizeof(verticesShape3[0])),
+		indicesShape3,
+		static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0])));
+
+	// Add meshes to entitty list
+	entities.push_back(mesh1);
+	entities.push_back(mesh2);
+	entities.push_back(mesh3);
+	entities.push_back(mesh2);
+	entities.push_back(mesh3);
 
 }
 
@@ -256,6 +273,24 @@ void Game::Update(float deltaTime, float totalTime)
 
 	CreateUI();
 
+	// Move all meshes
+	for (int i = 0; i < entities.size(); i++)
+	{
+		// Global movment of entities back a forth
+		XMFLOAT3 pos = entities[i].GetTransform()->GetPosition();
+		pos.x += sin(totalTime) * 0.5f * deltaTime;  
+
+		// Appling the updated global movement
+		entities[i].GetTransform()->SetPosition(pos);
+
+		// Global scale of entities back a forth
+		XMFLOAT3 scl = entities[i].GetTransform()->GetScale();
+		scl.y += sin(totalTime) * 0.5f * deltaTime;
+
+		// Appling the updated global scale
+		entities[i].GetTransform()->SetScale(scl);
+	}
+
 	// Example input checking: Quit if the escape key is pressed
 	if (Input::KeyDown(VK_ESCAPE))
 		Window::Quit();
@@ -277,34 +312,17 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
-	//// Adding tint and offset to meshs 
-	//VertexShaderData vertexShaderData;
-	//vertexShaderData.tint = colorTint;
-	//vertexShaderData.world = translation;
-
-	//// Copy data to the constant buffer
-	//D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
-	//Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
-	//memcpy(mappedBuffer.pData, &vertexShaderData, sizeof(vertexShaderData));
-	//Graphics::Context->Unmap(constantBuffer.Get(), 0);
-
-	//Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
-
 	VertexShaderData vertexShaderData;
-
-	
 
 	// Draw Geometry
 	for (int i = 0; i < entities.size(); i++)
 	{
-
+		// Adding tint and offset to meshs 
 		vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
-		vertexShaderData.tint = DirectX::XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
+		vertexShaderData.tint = colorTint;
 
-
+		// Drawing the entity
 		entities[i].Draw(constantBuffer, vertexShaderData);
-
-
 	}
 
 
@@ -474,6 +492,45 @@ void Game::CreateUI()
 
 
 	}
+
+	// Shows individual entities position, rotation, and scale and allows user to edit them
+	if (ImGui::CollapsingHeader("Scene Entities"))
+	{
+		ImGui::Indent(20.0f); // Indent to make the data more organized
+
+		for (int i = 0; i < entities.size(); i++)
+		{
+			ImGui::PushID(i);
+
+			// Creating a mesh label because I don't have names for my meshes
+			std::string meshLabel = "Entity " + std::to_string(i + 1);
+
+			if (ImGui::CollapsingHeader(meshLabel.c_str()))
+			{
+				// Get current transform data
+				DirectX::XMFLOAT3 pos = entities[i].GetTransform()->GetPosition();
+				DirectX::XMFLOAT3 rot = entities[i].GetTransform()->GetPitchYawRoll();
+				DirectX::XMFLOAT3 scale = entities[i].GetTransform()->GetScale();
+
+				// Position
+				if (ImGui::DragFloat3("Position", &pos.x, 0.01f))
+					entities[i].GetTransform()->SetPosition(pos);
+
+				// Rotation
+				if (ImGui::DragFloat3("Rotation", &rot.x, 0.01f))
+					entities[i].GetTransform()->SetRotation(rot);
+
+				// Scale
+				if (ImGui::DragFloat3("Scale", &scale.x, 0.01f))
+					entities[i].GetTransform()->SetScale(scale);
+
+			}
+
+			ImGui::PopID(); 
+
+		}
+	}
+
 
 
 	ImGui::End();

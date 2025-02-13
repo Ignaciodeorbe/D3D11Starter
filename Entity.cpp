@@ -16,10 +16,17 @@ Entity::Entity(std::shared_ptr<Mesh> mesh)
 std::shared_ptr<Mesh> Entity::GetMesh() { return mesh; }
 std::shared_ptr<Transform> Entity::GetTransform() { return transform; }
 
-void Entity::Draw(Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer, VertexShaderData vertexShaderData)
+//--------
+// Methods
+//--------
+
+/// <summary>
+/// Draws individual entity
+/// </summary>
+/// <param name="constantBuffer">The constant buffer that holds the transformation data for the vertex shader</param>
+/// <param name="vertexShaderData">The data that will be sent to the vertex shader (like tint and transforms</param>
+void Entity::Draw(Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer, VertexShaderData& vertexShaderData)
 {
-	
-	
 
 	// Copy data to the constant buffer
 	D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
@@ -29,7 +36,6 @@ void Entity::Draw(Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer, VertexSha
 
 	Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
+	// Draw the mesh 
 	mesh->Draw();
-
-	
 }

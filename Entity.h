@@ -29,5 +29,5 @@ public:
 	// Methods
 	//--------
 
-	void Draw(Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer, VertexShaderData vertexShaderData);
+	void Draw(Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer, VertexShaderData& vertexShaderData);
 };
