@@ -229,9 +229,9 @@ void Game::CreateGeometry()
 	unsigned int indicesShape3[] = { 0, 1, 2,};
 
 	// Initalization of actual shape
-	meshes.push_back(std::make_shared<Mesh>(verticesShape1, static_cast<unsigned int>(sizeof(verticesShape1) / sizeof(verticesShape1[0])), indicesShape1, static_cast<unsigned int>(sizeof(indicesShape1) / sizeof(indicesShape1[0]))));
-	meshes.push_back(std::make_shared<Mesh>(verticesShape2, static_cast<unsigned int>(sizeof(verticesShape2) / sizeof(verticesShape2[0])), indicesShape2, static_cast<unsigned int>(sizeof(indicesShape2) / sizeof(indicesShape2[0]))));
-	meshes.push_back(std::make_shared<Mesh>(verticesShape3, static_cast<unsigned int>(sizeof(verticesShape3) / sizeof(verticesShape3[0])), indicesShape3, static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0]))));
+	entities.push_back(std::make_shared<Mesh>(verticesShape1, static_cast<unsigned int>(sizeof(verticesShape1) / sizeof(verticesShape1[0])), indicesShape1, static_cast<unsigned int>(sizeof(indicesShape1) / sizeof(indicesShape1[0]))));
+	entities.push_back(std::make_shared<Mesh>(verticesShape2, static_cast<unsigned int>(sizeof(verticesShape2) / sizeof(verticesShape2[0])), indicesShape2, static_cast<unsigned int>(sizeof(indicesShape2) / sizeof(indicesShape2[0]))));
+	entities.push_back(std::make_shared<Mesh>(verticesShape3, static_cast<unsigned int>(sizeof(verticesShape3) / sizeof(verticesShape3[0])), indicesShape3, static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0]))));
 
 
 }
@@ -277,24 +277,37 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
-	// Adding tinr and offset to meshs 
+	//// Adding tint and offset to meshs 
+	//VertexShaderData vertexShaderData;
+	//vertexShaderData.tint = colorTint;
+	//vertexShaderData.world = translation;
+
+	//// Copy data to the constant buffer
+	//D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
+	//Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
+	//memcpy(mappedBuffer.pData, &vertexShaderData, sizeof(vertexShaderData));
+	//Graphics::Context->Unmap(constantBuffer.Get(), 0);
+
+	//Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+
 	VertexShaderData vertexShaderData;
-	vertexShaderData.tint = colorTint;
-	vertexShaderData.world = translation;
 
-	// Copy data to the constant buffer
-	D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
-	Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
-	memcpy(mappedBuffer.pData, &vertexShaderData, sizeof(vertexShaderData));
-	Graphics::Context->Unmap(constantBuffer.Get(), 0);
-
-	Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+	
 
 	// Draw Geometry
-	for (int i = 0; i < meshes.size(); i++)
+	for (int i = 0; i < entities.size(); i++)
 	{
-		meshes[i]->Draw();
+
+		vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
+		vertexShaderData.tint = DirectX::XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
+
+
+		entities[i].Draw(constantBuffer, vertexShaderData);
+
+
 	}
+
+
 
 	ImGui::Render(); // Turns this frame’s UI into renderable triangles
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); // Draws it to the screen
@@ -444,7 +457,7 @@ void Game::CreateUI()
 	if (ImGui::CollapsingHeader("Mesh Information"))
 	{
 		ImGui::Indent(20.0f); // Indent to make the data more organized
-		for (int i = 0; i < meshes.size(); i++)
+		for (int i = 0; i < entities.size(); i++)
 		{
 			// Creating a mesh label because I don't have names for my meshes
 			std::string meshLabel = "Mesh " + std::to_string(i + 1);
@@ -452,9 +465,9 @@ void Game::CreateUI()
 			// Shows the basic mesh info for each mesh displayed on screen
 			if (ImGui::CollapsingHeader(meshLabel.c_str()))
 			{
-				ImGui::Text("Triangles - %d", meshes[i]->GetIndexCount() / 3);
-				ImGui::Text("Vertices - %d", meshes[i]->GetVertexCount());
-				ImGui::Text("Indices - %d", meshes[i]->GetIndexCount());
+				ImGui::Text("Triangles - %d", entities[i].GetMesh()->GetIndexCount() / 3);
+				ImGui::Text("Vertices - %d", entities[i].GetMesh()->GetVertexCount());
+				ImGui::Text("Indices - %d", entities[i].GetMesh()->GetIndexCount());
 
 			}
 		}

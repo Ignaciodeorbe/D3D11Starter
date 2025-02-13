@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Mesh.h"
+#include "Entity.h"
 #include <vector>
 
 
@@ -36,7 +37,9 @@ public:
 
 	// Declaration for Mesh class objects
 	//std::shared_ptr<Mesh> originalTriangle;
-	std::vector<std::shared_ptr<Mesh>> meshes;
+	//std::vector<std::shared_ptr<Mesh>> meshes;
+	std::vector<Entity> entities;
+
 
 	//
 
