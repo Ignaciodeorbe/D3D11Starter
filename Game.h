@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Entity.h"
 #include <vector>
+#include <DirectXMath.h>
 
 
 class Game
@@ -36,12 +37,7 @@ public:
 	bool stopwatch = false;
 
 	// Declaration for Mesh class objects
-	//std::shared_ptr<Mesh> originalTriangle;
-	//std::vector<std::shared_ptr<Mesh>> meshes;
 	std::vector<Entity> entities;
-
-
-	//
 
 	DirectX::XMFLOAT4 colorTint;
 	DirectX::XMFLOAT3 translation;

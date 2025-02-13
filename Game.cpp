@@ -85,8 +85,8 @@ void Game::Initialize()
 	//ImGui::StyleColorsClassic();
 
 	// Giving the offset and tint some default values
-	translation = XMFLOAT3(0.25f, 0.0f, 0.0f);
-	colorTint = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
+	translation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 
@@ -489,7 +489,7 @@ void Game::CreateUI()
 
 			}
 		}
-
+		ImGui::Unindent(20.0f);
 
 	}
 
@@ -529,10 +529,10 @@ void Game::CreateUI()
 			ImGui::PopID(); 
 
 		}
+		ImGui::Unindent(20.0f);
 	}
 
 
 
 	ImGui::End();
 }
-
