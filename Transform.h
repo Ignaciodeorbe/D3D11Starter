@@ -68,5 +68,6 @@ public:
 	void Scale(float x, float y, float z);
 	void Scale(DirectX::XMFLOAT3 scale);
 
-
+	//	void MoveRelative(float x, float y, float z);
+	//void MoveRelative(XMFLOAT3 offset);
 };

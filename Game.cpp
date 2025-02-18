@@ -278,14 +278,14 @@ void Game::Update(float deltaTime, float totalTime)
 	{
 		// Global movment of entities back a forth
 		XMFLOAT3 pos = entities[i].GetTransform()->GetPosition();
-		pos.x += sin(totalTime) * 0.5f * deltaTime;  
+		pos.x += (float)(sin(totalTime) * 0.5f * deltaTime);  
 
 		// Appling the updated global movement
 		entities[i].GetTransform()->SetPosition(pos);
 
 		// Global scale of entities back a forth
 		XMFLOAT3 scl = entities[i].GetTransform()->GetScale();
-		scl.y += sin(totalTime) * 0.5f * deltaTime;
+		scl.y += (float)(sin(totalTime) * 0.5f * deltaTime);
 
 		// Appling the updated global scale
 		entities[i].GetTransform()->SetScale(scl);
