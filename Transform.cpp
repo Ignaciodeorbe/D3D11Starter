@@ -109,10 +109,7 @@ void Transform::MoveAbsolute(float x, float y, float z)
 
 void Transform::MoveAbsolute(XMFLOAT3 pos)
 {
-	position.x += pos.x;
-	position.y += pos.y;
-	position.z += pos.z;
-	dirty = true;
+	MoveAbsolute(pos.x, pos.y, pos.z);
 }
 
 // Rotation transformers
@@ -126,10 +123,7 @@ void Transform::Rotate(float pitch, float yaw, float roll)
 
 void Transform::Rotate(XMFLOAT3 rot)
 {
-	rotation.x += rot.x;
-	rotation.y += rot.y;
-	rotation.z += rot.z;
-	dirty = true;
+	Rotate(rot.x, rot.y, rot.z);
 }
 
 // Scale transformers
@@ -143,10 +137,7 @@ void Transform::Scale(float x, float y, float z)
 
 void Transform::Scale(XMFLOAT3 scl)
 {
-	scale.x *= scl.x;
-	scale.y *= scl.y;
-	scale.z *= scl.z;
-	dirty = true;
+	Scale(scl.x, scl.y, scl.z);
 }
 
 void Transform::MoveRelative(float x, float y, float z)
