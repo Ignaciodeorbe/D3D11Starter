@@ -16,7 +16,7 @@ private:
 	float fov;
 	float nearClip;
 	float farClip;
-	float speed;
+	float movmentSpeed;
 	float mouseSpeed;
 
 	// Enum for projection type

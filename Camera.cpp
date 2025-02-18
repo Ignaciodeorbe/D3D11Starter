@@ -3,8 +3,9 @@
 using namespace DirectX;
 
 Camera::Camera(XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio)
+	: movmentSpeed(movmentSpeed), mouseSpeed(mouseSpeed), fov(fov)
 {
-
+	transform.SetPosition(position);
 }
 
 void Camera::UpdateViewMatrix()
