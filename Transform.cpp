@@ -41,7 +41,7 @@ void Transform::UpdateWorldMatrix()
 /// </summary>
 void Transform::UpdateDirectionalVectors()
 {
-	// Making a rotation quaternion
+	// Making a rotation quaternion for current rotation
 	XMVECTOR rotationQuat = XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
 
 	// Updating directional vectors
@@ -151,10 +151,27 @@ void Transform::Scale(XMFLOAT3 scl)
 
 void Transform::MoveRelative(float x, float y, float z)
 {
+	// Making a rotation quaternion for current rotation
+	XMVECTOR rotationQuat = XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+
+	// Getting the absolute direction and rotating it by the current rotation
+	XMVECTOR relativeTransform = XMVector3Rotate(XMVectorSet(x, y, z, 0), rotationQuat);
+
+	// Storing the relative transform as a float3 so that it can be applied to current position
+	XMFLOAT3 move;
+	XMStoreFloat3(&move, relativeTransform);
+
+	position.x += move.x;
+	position.y += move.y;
+	position.z += move.z;
+
+	dirty = true;
 }
 
 void Transform::MoveRelative(XMFLOAT3 offset)
 {
+	// Calling the other move relative method for it to handle the work
+	MoveRelative(offset.x, offset.y, offset.z);
 }
 
 
