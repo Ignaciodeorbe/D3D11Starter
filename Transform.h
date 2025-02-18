@@ -11,6 +11,10 @@ private:
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 rotation;
 	DirectX::XMFLOAT3 scale;
+	DirectX::XMFLOAT3 forward;
+	DirectX::XMFLOAT3 rightward;
+	DirectX::XMFLOAT3 upward;
+
 
 	DirectX::XMFLOAT4X4 worldMatrix;
 	DirectX::XMFLOAT4X4 worldInverseTranspose;
@@ -22,6 +26,7 @@ private:
 	//--------
 
 	void UpdateWorldMatrix();
+	void UpdateDirectionalVectors();
 
 public:
 	Transform();
@@ -54,6 +59,12 @@ public:
 	// World matrix getters
 	DirectX::XMFLOAT4X4 GetWorldMatrix();
 
+	// Directional vector getters
+	DirectX::XMFLOAT3 GetRight();
+	DirectX::XMFLOAT3 GetUp();
+	DirectX::XMFLOAT3 GetForward();
+
+
 	//-------------
 	// Transformers
 	//-------------
@@ -68,6 +79,6 @@ public:
 	void Scale(float x, float y, float z);
 	void Scale(DirectX::XMFLOAT3 scale);
 
-	//	void MoveRelative(float x, float y, float z);
-	//void MoveRelative(XMFLOAT3 offset);
+	void MoveRelative(float x, float y, float z);
+	void MoveRelative(DirectX::XMFLOAT3 offset);
 };

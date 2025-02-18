@@ -4,7 +4,8 @@ using namespace DirectX;
 
 // Setting default values in constructor
 Transform::Transform()
-	: position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), dirty(true)
+	: position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), dirty(true),
+	rightward(1.0f, 0.0f, 0.0f), upward(0.0f, 1.0f, 0.0f), forward(0.0f, 0.0f, 1.0f)
 {
 	// Storing the identity matrix as the world matrix and inverse matrix
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
@@ -28,8 +29,30 @@ void Transform::UpdateWorldMatrix()
 		XMStoreFloat4x4(&worldMatrix, world);
 		XMStoreFloat4x4(&worldInverseTranspose, XMMatrixTranspose(XMMatrixInverse(nullptr, world)));
 
+		// Updating directional vectors
+		UpdateDirectionalVectors();
+
 		dirty = false;
 	}
+}
+
+/// <summary>
+/// Updating directional vectors instead of updating them in the getters
+/// </summary>
+void Transform::UpdateDirectionalVectors()
+{
+	// Making a rotation quaternion
+	XMVECTOR rotationQuat = XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+
+	// Updating directional vectors
+	XMVECTOR rightVector = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), rotationQuat);
+	XMVECTOR upVector = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), rotationQuat);
+	XMVECTOR forwardVector = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), rotationQuat);
+
+	// Storing vectors inside fields
+	XMStoreFloat3(&rightward, rightVector);
+	XMStoreFloat3(&upward, upVector);
+	XMStoreFloat3(&forward, forwardVector);
 }
 
 //--------
@@ -64,7 +87,11 @@ XMFLOAT4X4 Transform::GetWorldMatrix()
 	UpdateWorldMatrix();
 	return worldMatrix; 
 }
-//XMFLOAT4X4 Transform::GetWorldInverseTransposeMatrix() { return  }
+
+// Directional vectors getters
+XMFLOAT3 Transform::GetRight() { return rightward; }
+XMFLOAT3 Transform::GetUp() { return upward; }
+XMFLOAT3 Transform::GetForward() { return forward; }
 
 
 //-------------
@@ -121,4 +148,15 @@ void Transform::Scale(XMFLOAT3 scl)
 	scale.z *= scl.z;
 	dirty = true;
 }
+
+void Transform::MoveRelative(float x, float y, float z)
+{
+}
+
+void Transform::MoveRelative(XMFLOAT3 offset)
+{
+}
+
+
+
 
