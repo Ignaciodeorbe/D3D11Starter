@@ -18,15 +18,6 @@ private:
 	float farClip;
 	float movmentSpeed;
 	float mouseSpeed;
-
-	// Enum for projection type
-	enum class ProjectionType {
-		Perspective,
-		Orthographic
-	};
-
-	ProjectionType projectionType;
-
 	
 public:
 	Camera(DirectX::XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio);

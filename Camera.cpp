@@ -3,7 +3,7 @@
 using namespace DirectX;
 
 Camera::Camera(XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio)
-	: movmentSpeed(movmentSpeed), mouseSpeed(mouseSpeed), fov(fov), nearClip(0.1f), farClip(100.0f), projectionType(ProjectionType::Perspective)
+	: movmentSpeed(movmentSpeed), mouseSpeed(mouseSpeed), fov(fov), nearClip(0.1f), farClip(100.0f)
 {
 	// Initalizing intial position
 	transform.SetPosition(position);
