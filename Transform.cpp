@@ -119,6 +119,8 @@ void Transform::Rotate(float pitch, float yaw, float roll)
 	rotation.y += yaw;
 	rotation.z += roll;
 	dirty = true;
+	UpdateDirectionalVectors();
+
 }
 
 void Transform::Rotate(XMFLOAT3 rot)

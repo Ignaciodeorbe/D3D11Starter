@@ -89,7 +89,7 @@ void Game::Initialize()
 	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Initialize camera
-	camera = std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.1f, XM_PIDIV4, Window::AspectRatio());
+	camera = std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio());
 }
 
 

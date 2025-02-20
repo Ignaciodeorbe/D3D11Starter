@@ -68,6 +68,8 @@ private:
 	// Camera shared pointer
 	std::shared_ptr<Camera> camera;
 
+
+
 	//std::shared_ptr<SimpleVertexShader> vs;
 	//std::shared_ptr<SimplePixelShader> px;
 

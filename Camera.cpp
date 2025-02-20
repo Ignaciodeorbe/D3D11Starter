@@ -47,15 +47,14 @@ XMFLOAT4X4 Camera::ProjectionMatrix() { return projectionMatrix; }
 
 void Camera::Update(float deltaTime)
 {
+	// Camera movement along x,y,z axis
 	if (Input::KeyDown('W'))
 	{
 		transform.MoveRelative(0.0f, 0.0f, movmentSpeed * deltaTime);
-
 	}
 	if (Input::KeyDown('S'))
 	{
 		transform.MoveRelative(0.0f, 0.0f, -movmentSpeed * deltaTime);
-
 	}
 	if (Input::KeyDown('D'))
 	{
@@ -64,18 +63,24 @@ void Camera::Update(float deltaTime)
 	if (Input::KeyDown('A')) 
 	{ 
 		transform.MoveRelative(-movmentSpeed * deltaTime, 0.0f, 0.0f);
-
 	}
-
 	if (Input::KeyDown(VK_SHIFT)) 
 	{ 
 		transform.MoveRelative(0.0f, movmentSpeed * deltaTime, 0.0f);
-
 	}
 	if (Input::KeyDown(VK_CONTROL)) 
 	{
 		transform.MoveRelative(0.0f, -movmentSpeed * deltaTime, 0.0f);
-
 	}
+
+	if (Input::MouseLeftDown())
+	{
+		// Camera mouse movement controls
+		float mouseX = Input::GetMouseXDelta() * mouseSpeed;
+		float mouseY = Input::GetMouseYDelta() * mouseSpeed;
+		 
+		transform.Rotate(mouseY, mouseX, 0.0f);	
+	}
+
 	UpdateViewMatrix();
 }
