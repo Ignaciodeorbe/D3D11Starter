@@ -8,6 +8,8 @@
 #include "Entity.h"
 #include <vector>
 #include <DirectXMath.h>
+#include "Camera.h"
+
 
 
 class Game
@@ -62,5 +64,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
+
+	// Camera shared pointer
+	std::shared_ptr<Camera> camera;
 };
 

@@ -87,6 +87,9 @@ void Game::Initialize()
 	// Giving the offset and tint some default values
 	translation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// Initialize camera
+	camera = std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.1f, XM_PIDIV4, Window::AspectRatio());
 }
 
 
@@ -260,6 +263,12 @@ void Game::CreateGeometry()
 // --------------------------------------------------------
 void Game::OnResize()
 {
+	// Check for if camera is null
+	if (camera)
+	{
+		// Update camera with the window aspect ratio
+		camera->UpdateProjectionMatrix(Window::AspectRatio());
+	}
 }
 
 
@@ -272,6 +281,8 @@ void Game::Update(float deltaTime, float totalTime)
 	RefreshUI(deltaTime);
 
 	CreateUI();
+
+	camera->Update(deltaTime);
 
 	// Move all meshes
 	for (int i = 0; i < entities.size(); i++)
@@ -320,6 +331,11 @@ void Game::Draw(float deltaTime, float totalTime)
 		// Adding tint and offset to meshs 
 		vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
 		vertexShaderData.tint = colorTint;
+
+		// Passing the view and projection matrix to the vertex shader data struct
+		vertexShaderData.view = camera->ViewMatrix();
+		vertexShaderData.projection = camera->ProjectionMatrix();
+
 
 		// Drawing the entity
 		entities[i].Draw(constantBuffer, vertexShaderData);

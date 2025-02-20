@@ -25,7 +25,7 @@ void Camera::UpdateViewMatrix()
 
 	// Getting and storing the view matrix
 	XMMATRIX view = XMMatrixLookToLH(XMLoadFloat3(&pos), XMLoadFloat3(&forward), XMLoadFloat3(&worldUp));
-	XMStoreFloat4x4(&projectionMatrix, view);
+	XMStoreFloat4x4(&viewMatrix, view);
 
 }
 
@@ -37,9 +37,45 @@ void Camera::UpdateProjectionMatrix(float aspectRatio)
 {
 	// Getting and storing the projection matrix
 	XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspectRatio, nearClip, farClip);
-	XMStoreFloat4x4(&viewMatrix, projection);
+	XMStoreFloat4x4(&projectionMatrix, projection);
 
 }
 
+
 XMFLOAT4X4 Camera::ViewMatrix() { return viewMatrix; }
 XMFLOAT4X4 Camera::ProjectionMatrix() { return projectionMatrix; }
+
+void Camera::Update(float deltaTime)
+{
+	if (Input::KeyDown('W'))
+	{
+		transform.MoveRelative(0.0f, 0.0f, movmentSpeed * deltaTime);
+
+	}
+	if (Input::KeyDown('S'))
+	{
+		transform.MoveRelative(0.0f, 0.0f, -movmentSpeed * deltaTime);
+
+	}
+	if (Input::KeyDown('D'))
+	{
+		transform.MoveRelative(movmentSpeed * deltaTime, 0.0f, 0.0f);
+	}
+	if (Input::KeyDown('A')) 
+	{ 
+		transform.MoveRelative(-movmentSpeed * deltaTime, 0.0f, 0.0f);
+
+	}
+
+	if (Input::KeyDown(VK_SHIFT)) 
+	{ 
+		transform.MoveRelative(0.0f, movmentSpeed * deltaTime, 0.0f);
+
+	}
+	if (Input::KeyDown(VK_CONTROL)) 
+	{
+		transform.MoveRelative(0.0f, -movmentSpeed * deltaTime, 0.0f);
+
+	}
+	UpdateViewMatrix();
+}

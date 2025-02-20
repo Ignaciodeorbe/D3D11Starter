@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Input.h";
+#include "Input.h"
 #include <DirectXMath.h>
 #include "Transform.h"
 
@@ -28,10 +28,13 @@ public:
 	// -------
 	void UpdateViewMatrix();
 	void UpdateProjectionMatrix(float aspectRatio);
+	void Update(float deltaTime);
 
 	//--------
 	// Getters
 	// -------
 	DirectX::XMFLOAT4X4 ViewMatrix();
 	DirectX::XMFLOAT4X4 ProjectionMatrix();
+
+
 };
