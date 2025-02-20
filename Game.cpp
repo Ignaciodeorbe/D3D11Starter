@@ -89,7 +89,10 @@ void Game::Initialize()
 	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Initialize camera
-	camera = std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio());
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), true));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), false));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), false));
+
 }
 
 
@@ -264,10 +267,13 @@ void Game::CreateGeometry()
 void Game::OnResize()
 {
 	// Check for if camera is null
-	if (camera)
+	if (cameras.size() != 0)
 	{
-		// Update camera with the window aspect ratio
-		camera->UpdateProjectionMatrix(Window::AspectRatio());
+		// Update cameras with the window aspect ratio
+		for (int i = 0; i < cameras.size(); i++)
+		{
+			cameras[i]->UpdateProjectionMatrix(Window::AspectRatio());
+		}
 	}
 }
 
@@ -282,7 +288,14 @@ void Game::Update(float deltaTime, float totalTime)
 
 	CreateUI();
 
-	camera->Update(deltaTime);
+	// Update cameras with the window aspect ratio
+	for (int i = 0; i < cameras.size(); i++)
+	{
+		if (cameras[i]->IsActive())
+		{
+			cameras[i]->Update(deltaTime);
+		}
+	}
 
 	// Move all meshes
 	for (int i = 0; i < entities.size(); i++)
@@ -332,9 +345,18 @@ void Game::Draw(float deltaTime, float totalTime)
 		vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
 		vertexShaderData.tint = colorTint;
 
-		// Passing the view and projection matrix to the vertex shader data struct
-		vertexShaderData.view = camera->ViewMatrix();
-		vertexShaderData.projection = camera->ProjectionMatrix();
+
+		// Update cameras with the window aspect ratio
+		for (int i = 0; i < cameras.size(); i++)
+		{
+			if (cameras[i]->IsActive())
+			{
+				// Passing the view and projection matrix to the vertex shader data struct
+				vertexShaderData.view = cameras[i]->ViewMatrix();
+				vertexShaderData.projection = cameras[i]->ProjectionMatrix();
+			}
+				
+		}
 
 
 		// Drawing the entity

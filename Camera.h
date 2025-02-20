@@ -18,9 +18,10 @@ private:
 	float farClip;
 	float movmentSpeed;
 	float mouseSpeed;
+	bool isActive;
 	
 public:
-	Camera(DirectX::XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio);
+	Camera(DirectX::XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio, bool isActive);
 
 
 	//--------
@@ -35,6 +36,7 @@ public:
 	// -------
 	DirectX::XMFLOAT4X4 ViewMatrix();
 	DirectX::XMFLOAT4X4 ProjectionMatrix();
+	bool IsActive();
 
 
 };

@@ -2,8 +2,8 @@
 
 using namespace DirectX;
 
-Camera::Camera(XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio)
-	: movmentSpeed(movmentSpeed), mouseSpeed(mouseSpeed), fov(fov), nearClip(0.1f), farClip(100.0f)
+Camera::Camera(XMFLOAT3 position, float movmentSpeed, float mouseSpeed, float fov, float aspectRatio, bool isActive)
+	: movmentSpeed(movmentSpeed), mouseSpeed(mouseSpeed), fov(fov), nearClip(0.1f), farClip(100.0f), isActive(isActive)
 {
 	// Initalizing intial position
 	transform.SetPosition(position);
@@ -45,6 +45,9 @@ void Camera::UpdateProjectionMatrix(float aspectRatio)
 XMFLOAT4X4 Camera::ViewMatrix() { return viewMatrix; }
 XMFLOAT4X4 Camera::ProjectionMatrix() { return projectionMatrix; }
 
+bool Camera::IsActive() { return isActive; }
+
+
 void Camera::Update(float deltaTime)
 {
 	// Camera movement along x,y,z axis
@@ -73,9 +76,9 @@ void Camera::Update(float deltaTime)
 		transform.MoveRelative(0.0f, -movmentSpeed * deltaTime, 0.0f);
 	}
 
+	// Camera mouse movement controls
 	if (Input::MouseLeftDown())
 	{
-		// Camera mouse movement controls
 		float mouseX = Input::GetMouseXDelta() * mouseSpeed;
 		float mouseY = Input::GetMouseYDelta() * mouseSpeed;
 		 
