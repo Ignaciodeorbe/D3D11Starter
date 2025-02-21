@@ -38,5 +38,9 @@ public:
 	DirectX::XMFLOAT4X4 ProjectionMatrix();
 	bool IsActive();
 
+	//--------
+	// Setters
+	//--------
+	void SetActive(bool cameraActive);
 
 };

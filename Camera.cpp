@@ -36,7 +36,7 @@ void Camera::UpdateViewMatrix()
 void Camera::UpdateProjectionMatrix(float aspectRatio)
 {
 	// Getting and storing the projection matrix
-	XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspectRatio, nearClip, farClip);
+	XMMATRIX projection = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearClip, farClip);
 	XMStoreFloat4x4(&projectionMatrix, projection);
 
 }
@@ -46,6 +46,8 @@ XMFLOAT4X4 Camera::ViewMatrix() { return viewMatrix; }
 XMFLOAT4X4 Camera::ProjectionMatrix() { return projectionMatrix; }
 
 bool Camera::IsActive() { return isActive; }
+
+void Camera::SetActive(bool cameraActive) { isActive = cameraActive; }
 
 
 void Camera::Update(float deltaTime)

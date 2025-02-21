@@ -90,8 +90,8 @@ void Game::Initialize()
 
 	// Initialize camera
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), true));
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), false));
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), false));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio(), false));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio(), false));
 
 }
 
@@ -540,10 +540,10 @@ void Game::CreateUI()
 		{
 			ImGui::PushID(i);
 
-			// Creating a mesh label because I don't have names for my meshes
-			std::string meshLabel = "Entity " + std::to_string(i + 1);
+			// Creating a label for entities
+			std::string entityLabel = "Entity " + std::to_string(i + 1);
 
-			if (ImGui::CollapsingHeader(meshLabel.c_str()))
+			if (ImGui::CollapsingHeader(entityLabel.c_str()))
 			{
 				// Get current transform data
 				DirectX::XMFLOAT3 pos = entities[i].GetTransform()->GetPosition();
@@ -570,7 +570,37 @@ void Game::CreateUI()
 		ImGui::Unindent(20.0f);
 	}
 
+	// Allows user to switch between cameras
+	if (ImGui::CollapsingHeader("Cameras"))
+	{
+		ImGui::Indent(20.0f); // Indent to make the data more organized
 
 
+		for (int i = 0; i < cameras.size(); i++)
+		{
+			// Creating a label for cameras
+			std::string cameraLabel = "Camera " + std::to_string(i + 1);
+
+			ImGui::PushID(i);
+
+			// Set the respective camera active if button is clicked
+			if (ImGui::Button(cameraLabel.c_str()))
+			{
+				// Turn all cameras to inactive
+				for (int j = 0; j < cameras.size(); j++)
+				{
+					cameras[j]->SetActive(false);
+				}
+				// Activate the right camera
+				cameras[i]->SetActive(true);
+			}
+
+			ImGui::PopID();
+
+		}
+
+
+		ImGui::Unindent(20.0f);
+	}
 	ImGui::End();
 }
