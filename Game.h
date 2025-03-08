@@ -61,7 +61,6 @@ private:
 
 	// Shaders and shader-related constructs
 
-
 	// Camera shared pointer
 	std::vector<std::shared_ptr<Camera>> cameras;
 
