@@ -134,19 +134,19 @@ void Game::CreateGeometry()
 	// Initializing Shapes
 	//--------------------
 	
-	std::shared_ptr<Mesh> mesh1 = std::make_shared<Mesh>(FixPath("../../Assets/Models/sphere.obj").c_str());
+	std::shared_ptr<Mesh> mesh1 = std::make_shared<Mesh>(FixPath("../../Assets/Models/cube.obj").c_str());
 	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(FixPath("../../Assets/Models/helix.obj").c_str());
-	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(FixPath("../../Assets/Models/cube.obj").c_str());
+	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(FixPath("../../Assets/Models/sphere.obj").c_str());
 
 
 
 
 	// Add meshes to entitty list
-	//entities.push_back(Entity(mesh1, material1));
+	entities.push_back(Entity(mesh1, material1));
 	//entities.push_back(Entity(mesh2, material2));
-	entities.push_back(Entity(mesh3, material3));
+	//entities.push_back(Entity(mesh3, material3));
 	
-
+	entities[0].GetTransform()->SetPosition(XMFLOAT3(-3.0f, 0.0f, 0.0f));
 }
 
 
