@@ -121,32 +121,49 @@ void Game::CreateGeometry()
 		Graphics::Device, Graphics::Context, FixPath(L"VertexShader.cso").c_str());
 	std::shared_ptr<SimplePixelShader> ps = std::make_shared<SimplePixelShader>(
 		Graphics::Device, Graphics::Context, FixPath(L"PixelShader.cso").c_str());
+	//std::shared_ptr<SimpleVertexShader> uvPixelShader = std::make_shared<SimpleVertexShader>(
+	//	Graphics::Device, Graphics::Context, FixPath(L"DebugUVsPS.cso").c_str());
+	//std::shared_ptr<SimplePixelShader> normalPixelShader = std::make_shared<SimplePixelShader>(
+	//	Graphics::Device, Graphics::Context, FixPath(L"DebugNormalsPS.cso").c_str());
 
 	// Creating materials with different tints
-	std::shared_ptr<Material> material1 = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), vs, ps); 
-	std::shared_ptr<Material> material2 = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, ps);
-	std::shared_ptr<Material> material3 = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, ps);
+	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps); 
+	std::shared_ptr<Material> basicMaterial2 = std::make_shared<Material>(
+		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps);
+	//std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
+	//	XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader);
+	//std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
+	//	XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader);
 
 	//--------------------
-	// Initializing Shapes
+	// Initializing 3D meshes
 	//--------------------
 	
-	std::shared_ptr<Mesh> mesh1 = std::make_shared<Mesh>(FixPath("../../Assets/Models/cube.obj").c_str());
-	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(FixPath("../../Assets/Models/helix.obj").c_str());
-	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(FixPath("../../Assets/Models/sphere.obj").c_str());
-
-
+	std::shared_ptr<Mesh> cube = std::make_shared<Mesh>(FixPath("../../Assets/Models/cube.obj").c_str());
+	std::shared_ptr<Mesh> cylinder = std::make_shared<Mesh>(FixPath("../../Assets/Models/cylinder.obj").c_str());
+	std::shared_ptr<Mesh> helix = std::make_shared<Mesh>(FixPath("../../Assets/Models/helix.obj").c_str());
+	std::shared_ptr<Mesh> sphere = std::make_shared<Mesh>(FixPath("../../Assets/Models/sphere.obj").c_str());
+	std::shared_ptr<Mesh> torus = std::make_shared<Mesh>(FixPath("../../Assets/Models/torus.obj").c_str());
+	std::shared_ptr<Mesh> quad = std::make_shared<Mesh>(FixPath("../../Assets/Models/quad.obj").c_str());
+	std::shared_ptr<Mesh> quadDoubleSided = std::make_shared<Mesh>(FixPath("../../Assets/Models/quad_double_sided.obj").c_str());
 
 
 	// Add meshes to entitty list
-	entities.push_back(Entity(mesh1, material1));
-	//entities.push_back(Entity(mesh2, material2));
-	//entities.push_back(Entity(mesh3, material3));
-	
-	entities[0].GetTransform()->SetPosition(XMFLOAT3(-3.0f, 0.0f, 0.0f));
+	entities.push_back(Entity(cube, basicMaterial));
+	entities.push_back(Entity(cylinder, basicMaterial2));
+	entities.push_back(Entity(helix, basicMaterial));
+	entities.push_back(Entity(sphere, basicMaterial2));
+	entities.push_back(Entity(torus, basicMaterial));
+	entities.push_back(Entity(quad, basicMaterial2));
+	entities.push_back(Entity(quadDoubleSided, basicMaterial));
+
+	// Spacing out the entities
+	for (int i = 0; i < entities.size(); i++)
+	{
+		entities[i].GetTransform()->SetPosition(XMFLOAT3((3.0f * i) - 9.0f, 0.0f, 0.0f));
+
+	}
 }
 
 
@@ -225,8 +242,6 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearRenderTargetView(Graphics::BackBufferRTV.Get(),	bgColor);
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
-
-	//VertexShaderData vertexShaderData;
 
 
 	// Draw Geometry
@@ -376,7 +391,7 @@ void Game::CreateUI()
 		ImGui::Text("Press R to reset");
 		ImGui::Text("Stopwatch - %f Seconds", time);
 		
-		// Color picker for mesh tinit and UI element to drag the meshes
+		// Color picker for mesh tint and UI element to drag the meshes
 		ImGui::DragFloat3("Shader Offset", &translation.x, 0.001f);			 
 		ImGui::ColorEdit4("RGBA mesh tint color picker", &colorTint.x);
 	}
