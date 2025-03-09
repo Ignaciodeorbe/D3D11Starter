@@ -16,6 +16,7 @@
 #include <vector>
 #include "BufferStructs.h"
 #include "SimpleShader.h"
+#include "Material.h"
 
 
 
@@ -112,6 +113,21 @@ Game::~Game()
 // --------------------------------------------------------
 void Game::CreateGeometry()
 {
+
+
+	std::shared_ptr<SimpleVertexShader> vs = std::make_shared<SimpleVertexShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"VertexShader.cso").c_str());
+	std::shared_ptr<SimplePixelShader> ps = std::make_shared<SimplePixelShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"PixelShader.cso").c_str());
+
+	// Creating materials with different tints
+	std::shared_ptr<Material> material1 = std::make_shared<Material>(
+		XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), vs, ps); 
+	std::shared_ptr<Material> material2 = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, ps);
+	std::shared_ptr<Material> material3 = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, ps);
+
 	//--------------------
 	// Initializing Shapes
 	//--------------------
@@ -175,12 +191,13 @@ void Game::CreateGeometry()
 		indicesShape3,
 		static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0])));
 
+
+
 	// Add meshes to entitty list
-	entities.push_back(mesh1);
-	entities.push_back(mesh2);
-	entities.push_back(mesh3);
-	entities.push_back(mesh2);
-	entities.push_back(mesh3);
+	entities.push_back(Entity(mesh1, material1));
+	entities.push_back(Entity(mesh2, material2));
+	entities.push_back(Entity(mesh3, material3));
+	
 
 }
 
@@ -261,31 +278,34 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
-	VertexShaderData vertexShaderData;
+	//VertexShaderData vertexShaderData;
+
 
 	// Draw Geometry
 	for (int i = 0; i < entities.size(); i++)
 	{
-		// Adding tint and offset to meshs 
-		vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
-		vertexShaderData.tint = colorTint;
+		//// Adding tint and offset to meshs 
+		//vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
+		//vertexShaderData.tint = colorTint;
 
 
 		// Update cameras with the window aspect ratio
-		for (int i = 0; i < cameras.size(); i++)
+		for (int j = 0; j < cameras.size(); j++)
 		{
-			if (cameras[i]->IsActive())
+			if (cameras[j]->IsActive())
 			{
-				// Passing the view and projection matrix to the vertex shader data struct
-				vertexShaderData.view = cameras[i]->ViewMatrix();
-				vertexShaderData.projection = cameras[i]->ProjectionMatrix();
+				//// Passing the view and projection matrix to the vertex shader data struct
+				//vertexShaderData.view = cameras[i]->ViewMatrix();
+				//vertexShaderData.projection = cameras[i]->ProjectionMatrix();
+
+				// Drawing the entity
+				entities[i].Draw(cameras[i]);
+
+
 			}
 				
 		}
 
-
-		// Drawing the entity
-		//entities[i].Draw(constantBuffer, vertexShaderData);-----------------------------------------------------------------
 	}
 
 

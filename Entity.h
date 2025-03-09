@@ -5,6 +5,9 @@
 #include "Transform.h"
 #include <vector>
 #include "BufferStructs.h"
+#include "Material.h"
+#include "Camera.h"
+
 
 
 class Entity
@@ -13,21 +16,31 @@ class Entity
 private:
 	std::shared_ptr<Transform> transform;
 	std::shared_ptr<Mesh> mesh;
+	std::shared_ptr<Material> material;
 
 public:
 
 	// Constructor
-	Entity(std::shared_ptr<Mesh> mesh);
+	Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
 
 	//--------
 	// Getters
 	//--------
 	std::shared_ptr<Mesh> GetMesh();
 	std::shared_ptr<Transform> GetTransform();
+	std::shared_ptr<Material> GetMaterial();
+
+
+	//--------
+	// Setters
+	//--------
+	void SetMaterial(std::shared_ptr<Material> material);
+
+
 
 	//--------
 	// Methods
 	//--------
 
-	void Draw(Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer, VertexShaderData& vertexShaderData);
+	void Draw(std::shared_ptr<Camera> camera);
 };
