@@ -210,6 +210,8 @@ Mesh::Mesh(const char* filename)
 	// Close the file and create the actual buffers
 	obj.close();
 
+
+
 	CreateBuffers(&verts[0], vertCounter, &indices[0], indexCounter);
 }
 

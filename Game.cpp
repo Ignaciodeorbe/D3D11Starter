@@ -90,6 +90,8 @@ void Game::Initialize()
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio(), false));
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio(), false));
 
+	currentCamera = cameras[0];
+
 }
 
 
@@ -132,13 +134,16 @@ void Game::CreateGeometry()
 	// Initializing Shapes
 	//--------------------
 	
-	
+	std::shared_ptr<Mesh> mesh1 = std::make_shared<Mesh>(FixPath("../../Assets/Models/sphere.obj").c_str());
+	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(FixPath("../../Assets/Models/helix.obj").c_str());
+	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(FixPath("../../Assets/Models/cube.obj").c_str());
+
 
 
 
 	// Add meshes to entitty list
-	entities.push_back(Entity(mesh1, material1));
-	entities.push_back(Entity(mesh2, material2));
+	//entities.push_back(Entity(mesh1, material1));
+	//entities.push_back(Entity(mesh2, material2));
 	entities.push_back(Entity(mesh3, material3));
 	
 
@@ -183,22 +188,22 @@ void Game::Update(float deltaTime, float totalTime)
 	}
 
 	// Move all meshes
-	for (int i = 0; i < entities.size(); i++)
-	{
-		// Global movment of entities back a forth
-		XMFLOAT3 pos = entities[i].GetTransform()->GetPosition();
-		pos.x += (float)(sin(totalTime) * 0.5f * deltaTime);  
-
-		// Appling the updated global movement
-		entities[i].GetTransform()->SetPosition(pos);
-
-		// Global scale of entities back a forth
-		XMFLOAT3 scl = entities[i].GetTransform()->GetScale();
-		scl.y += (float)(sin(totalTime) * 0.5f * deltaTime);
-
-		// Appling the updated global scale
-		entities[i].GetTransform()->SetScale(scl);
-	}
+	//for (int i = 0; i < entities.size(); i++)
+	//{
+	//	// Global movment of entities back a forth
+	//	XMFLOAT3 pos = entities[i].GetTransform()->GetPosition();
+	//	pos.x += (float)(sin(totalTime) * 0.5f * deltaTime);  
+	//
+	//	// Appling the updated global movement
+	//	entities[i].GetTransform()->SetPosition(pos);
+	//
+	//	// Global scale of entities back a forth
+	//	XMFLOAT3 scl = entities[i].GetTransform()->GetScale();
+	//	scl.y += (float)(sin(totalTime) * 0.5f * deltaTime);
+	//
+	//	// Appling the updated global scale
+	//	entities[i].GetTransform()->SetScale(scl);
+	//}
 
 	// Example input checking: Quit if the escape key is pressed
 	if (Input::KeyDown(VK_ESCAPE))
@@ -227,28 +232,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	// Draw Geometry
 	for (int i = 0; i < entities.size(); i++)
 	{
-		//// Adding tint and offset to meshs 
-		//vertexShaderData.world = entities[i].GetTransform()->GetWorldMatrix();
-		//vertexShaderData.tint = colorTint;
-
-
-		// Update cameras with the window aspect ratio
-		for (int j = 0; j < cameras.size(); j++)
-		{
-			if (cameras[j]->IsActive())
-			{
-				//// Passing the view and projection matrix to the vertex shader data struct
-				//vertexShaderData.view = cameras[i]->ViewMatrix();
-				//vertexShaderData.projection = cameras[i]->ProjectionMatrix();
-
-				// Drawing the entity
-
-
-			}
-				
-		}
-
-			entities[i].Draw(cameras[i]);
+			entities[i].Draw(currentCamera);
 	}
 
 

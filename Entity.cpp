@@ -32,11 +32,20 @@ void Entity::SetMaterial(std::shared_ptr<Material> mat) { material = mat; }
 void Entity::Draw(std::shared_ptr<Camera> camera)
 {
 	std::shared_ptr<SimpleVertexShader> vertexShaderData = material->VertexShader();
+	std::shared_ptr<SimplePixelShader> pixelShaderData = material->PixelShader();
+
+	material->VertexShader()->SetShader();
+	material->PixelShader()->SetShader();
+
 
 	vertexShaderData->SetFloat4("colorTint", material->Tint()); // Strings here MUST
 	vertexShaderData->SetMatrix4x4("world", transform->GetWorldMatrix()); // match variable
 	vertexShaderData->SetMatrix4x4("view", camera->ViewMatrix()); // names in your
 	vertexShaderData->SetMatrix4x4("projection", camera->ProjectionMatrix()); // shader’s cbuffer!
+
+
+	pixelShaderData->SetFloat4("colorTint", material->Tint());
+	pixelShaderData->CopyAllBufferData();
 
 
 	//// Copy data to the constant buffer
@@ -49,8 +58,7 @@ void Entity::Draw(std::shared_ptr<Camera> camera)
 
 	vertexShaderData->CopyAllBufferData();
 
-	material->VertexShader()->SetShader();
-	material->PixelShader()->SetShader();
+
 
 	// Draw the mesh 
 	mesh->Draw();

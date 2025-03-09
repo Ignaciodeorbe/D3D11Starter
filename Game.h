@@ -44,6 +44,9 @@ public:
 	DirectX::XMFLOAT4 colorTint;
 	DirectX::XMFLOAT3 translation;
 
+	// Track the current camera
+	std::shared_ptr<Camera> currentCamera;
+
 
 private:
 
