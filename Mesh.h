@@ -18,11 +18,14 @@ private:
 	int indexCount;
 	int vertexCount;
 
+	// Helper method to create buffers from vertex and index data
+	void CreateBuffers(Vertex* vertices, int vertexCount, unsigned int* indices, int indexCount);
 
 public:
 
 	// Constructor
 	Mesh(Vertex *vertices, int vertexCount, unsigned int* indices, int indexCount);
+	Mesh(const char* filename);
 
 	// Destructor
 	~Mesh();

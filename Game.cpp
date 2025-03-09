@@ -132,64 +132,7 @@ void Game::CreateGeometry()
 	// Initializing Shapes
 	//--------------------
 	
-	// Colors for the vertices
-	XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-	XMFLOAT4 purple = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
-	XMFLOAT4 orange = XMFLOAT4(1.0f, 0.6f, 0.0f, 1.0f);
-
-
-
-	// Vertices positions
-	Vertex verticesShape1[] =
-	{
-		{ XMFLOAT3(+0.25f, +0.25f, +0.0f), red },
-		{ XMFLOAT3(+0.25f, -0.25f, +0.0f), blue },
-		{ XMFLOAT3(-0.25f, -0.25f, +0.0f), green },
-		{ XMFLOAT3(-0.25f, +0.25f, +0.0f), blue },
-
-	};
-
-	// Vertices positions
-	Vertex verticesShape2[] =
-	{
-		{ XMFLOAT3(+0.75f, +0.75f, +0.0f), red },
-		{ XMFLOAT3(+0.9f, -0.0f, +0.0f), orange },
-		{ XMFLOAT3(+0.6f, -0.0f, +0.0f), orange },
-		{ XMFLOAT3(+0.75f, -0.75f, +0.0f), purple },
-
-	};
-
-	// Vertices positions
-	Vertex verticesShape3[] =
-	{
-		{ XMFLOAT3(-0.7f, +0.75f, +0.0f), purple },
-		{ XMFLOAT3(-0.7f, -0.2f, +0.0f), orange },
-		{ XMFLOAT3(-0.9f, -0.75f, +0.0f), blue },
-
-	};
-
-	// Indices, order the vertices in the way that they will be drawn 
-	unsigned int indicesShape1[] = { 0, 1, 2, 3, 0, 2 }; // Each triangle needs 3 vertices, you can reuse them if needed
-	unsigned int indicesShape2[] = { 0, 1, 2, 2, 1, 3 }; 
-	unsigned int indicesShape3[] = { 0, 1, 2,};
-
-	// Initalization of actual shape
-	std::shared_ptr<Mesh> mesh1 = std::make_shared<Mesh>(verticesShape1, 
-		static_cast<unsigned int>(sizeof(verticesShape1) / sizeof(verticesShape1[0])), 
-		indicesShape1, 
-		static_cast<unsigned int>(sizeof(indicesShape1) / sizeof(indicesShape1[0])));
-
-	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(verticesShape2,
-		static_cast<unsigned int>(sizeof(verticesShape2) / sizeof(verticesShape2[0])),
-		indicesShape2,
-		static_cast<unsigned int>(sizeof(indicesShape2) / sizeof(indicesShape2[0])));
-
-	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(verticesShape3,
-		static_cast<unsigned int>(sizeof(verticesShape3) / sizeof(verticesShape3[0])),
-		indicesShape3,
-		static_cast<unsigned int>(sizeof(indicesShape3) / sizeof(indicesShape3[0])));
+	
 
 
 
@@ -299,13 +242,13 @@ void Game::Draw(float deltaTime, float totalTime)
 				//vertexShaderData.projection = cameras[i]->ProjectionMatrix();
 
 				// Drawing the entity
-				entities[i].Draw(cameras[i]);
 
 
 			}
 				
 		}
 
+			entities[i].Draw(cameras[i]);
 	}
 
 
