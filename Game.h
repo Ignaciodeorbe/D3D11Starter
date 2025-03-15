@@ -67,11 +67,6 @@ private:
 	// Camera shared pointer
 	std::vector<std::shared_ptr<Camera>> cameras;
 
-
-
-	//std::shared_ptr<SimpleVertexShader> vs;
-	//std::shared_ptr<SimplePixelShader> px;
-
-
+	Microsoft::WRL::ComPtr<ID3D11SamplerState > samplerState;
 };
 

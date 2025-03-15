@@ -17,8 +17,7 @@
 #include "BufferStructs.h"
 #include "SimpleShader.h"
 #include "Material.h"
-
-
+#include "WICTextureLoader.h"
 
 // Needed for a helper function to load pre-compiled shader files
 #pragma comment(lib, "d3dcompiler.lib")
@@ -115,6 +114,26 @@ Game::~Game()
 // --------------------------------------------------------
 void Game::CreateGeometry()
 {
+	// Local variables
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureResource;
+	D3D11_SAMPLER_DESC samplerDesc = {};
+
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	Graphics::Device->CreateSamplerState(&samplerDesc, samplerState.GetAddressOf());
+
+	// Load Lava Rock texture
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/LavaRockTexture.png").c_str(),
+		nullptr,
+		textureResource.GetAddressOf());
 
 
 	std::shared_ptr<SimpleVertexShader> vs = std::make_shared<SimpleVertexShader>(
