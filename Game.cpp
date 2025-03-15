@@ -86,9 +86,9 @@ void Game::Initialize()
 	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Initialize camera
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio(), true));
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio(), false));
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio(), false));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio()));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio()));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio()));
 
 	currentCamera = cameras[0];
 
@@ -195,14 +195,8 @@ void Game::Update(float deltaTime, float totalTime)
 
 	CreateUI();
 
-	// Update cameras with the window aspect ratio
-	for (int i = 0; i < cameras.size(); i++)
-	{
-		if (cameras[i]->IsActive())
-		{
-			cameras[i]->Update(deltaTime);
-		}
-	}
+	//// Update cameras with the window aspect ratio
+	currentCamera->Update(deltaTime);
 
 	// Move all meshes
 	//for (int i = 0; i < entities.size(); i++)
@@ -472,18 +466,16 @@ void Game::CreateUI()
 
 			// Set the respective camera active if button is clicked
 			if (ImGui::Button(cameraLabel.c_str()))
-			{
-				// Turn all cameras to inactive
-				for (int j = 0; j < cameras.size(); j++)
-				{
-					cameras[j]->SetActive(false);
-				}
-				// Activate the right camera
-				cameras[i]->SetActive(true);
+			{				
+				// Activate the right camera			
+				currentCamera = cameras[i];
 			}
 
-			ImGui::PopID();
+			// Display each cameras position
+			XMFLOAT3 cameraTransform = cameras[i]->GetTransform().GetPosition();
+			ImGui::Text("Position: X - %f Y - %f Z - %f", cameraTransform.x, cameraTransform.y, cameraTransform.z);
 
+			ImGui::PopID();
 		}
 
 
