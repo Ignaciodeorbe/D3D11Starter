@@ -31,34 +31,7 @@ void Entity::SetMaterial(std::shared_ptr<Material> mat) { material = mat; }
 /// <param name="vertexShaderData">The data that will be sent to the vertex shader (like tint and transforms</param>
 void Entity::Draw(std::shared_ptr<Camera> camera)
 {
-	std::shared_ptr<SimpleVertexShader> vertexShaderData = material->VertexShader();
-	std::shared_ptr<SimplePixelShader> pixelShaderData = material->PixelShader();
-
-	material->VertexShader()->SetShader();
-	material->PixelShader()->SetShader();
-
-
-	vertexShaderData->SetFloat4("colorTint", material->Tint()); // Strings here MUST
-	vertexShaderData->SetMatrix4x4("world", transform->GetWorldMatrix()); // match variable
-	vertexShaderData->SetMatrix4x4("view", camera->ViewMatrix()); // names in your
-	vertexShaderData->SetMatrix4x4("projection", camera->ProjectionMatrix()); // shader’s cbuffer!
-
-
-	pixelShaderData->SetFloat4("colorTint", material->Tint());
-	pixelShaderData->CopyAllBufferData();
-
-
-	//// Copy data to the constant buffer
-	//D3D11_MAPPED_SUBRESOURCE mappedBuffer = {};
-	//Graphics::Context->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedBuffer);
-	//memcpy(mappedBuffer.pData, &vertexShaderData, sizeof(vertexShaderData));
-	//Graphics::Context->Unmap(constantBuffer.Get(), 0);
-	//
-	//Graphics::Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
-
-	vertexShaderData->CopyAllBufferData();
-
-
+	material->PrepareMaterial(camera, transform);
 
 	// Draw the mesh 
 	mesh->Draw();

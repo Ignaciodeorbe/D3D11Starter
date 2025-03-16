@@ -155,6 +155,11 @@ void Game::CreateGeometry()
 	//std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
 	//	XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader);
 
+	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps);
+	lavaRockMaterial->AddSampler("sampler", samplerState);
+	lavaRockMaterial->AddTextureSRV("texture", textureResource);
+
 	//--------------------
 	// Initializing 3D meshes
 	//--------------------
@@ -169,7 +174,7 @@ void Game::CreateGeometry()
 
 
 	// Add meshes to entitty list
-	entities.push_back(Entity(cube, basicMaterial));
+	entities.push_back(Entity(cube, lavaRockMaterial));
 	entities.push_back(Entity(cylinder, basicMaterial2));
 	entities.push_back(Entity(helix, basicMaterial));
 	entities.push_back(Entity(sphere, basicMaterial2));
