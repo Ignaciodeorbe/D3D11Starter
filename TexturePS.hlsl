@@ -21,11 +21,12 @@ cbuffer ConstantBuffer : register(b0)
 	float4 colorTint;
 	float2 scale;
 	float2 offset;
+	float distortionStrength;
 }
 
 Texture2D SurfaceTexture : register(t0);
 
-Texture2D DistortionSurfaceTexture : register(t0);
+Texture2D DistortionSurfaceTexture : register(t1);
 
 SamplerState BasicSampler : register(s0);
 
@@ -43,12 +44,16 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// Adjusting scale and uv offset
 	input.uv = input.uv * scale + offset;
 
-	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
-
-
-	// Just return the input color
-	// - This color (like most values passing through the rasterizer) is 
-	//   interpolated for each pixel between the corresponding vertices 
-	//   of the triangle we're rendering
+	// Sample distortion texture
+	float2 distortion = DistortionSurfaceTexture.Sample(BasicSampler, input.uv).rg * 2.0 - 1.0;
+	distortion *= distortionStrength; // Scale the effect
+	
+	// Apply distortion to UVs
+	float2 distortedUV = input.uv + distortion;
+	
+	// Sample the base texture using distorted UVs
+	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, distortedUV);
+	
+	// Return the final color with tint applied
 	return surfaceColor * colorTint;
 }

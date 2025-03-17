@@ -139,7 +139,16 @@ void Game::CreateGeometry()
 		nullptr,
 		lavaRockSRV.GetAddressOf());
 
-	// Load stone floor texture
+	// Load sand texture
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SandSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/Sand.png").c_str(),
+		nullptr,
+		SandSRV.GetAddressOf());
+
+	// Load distortion texture texture
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SandSRV;
 	CreateWICTextureFromFile(
 		Graphics::Device.Get(),
@@ -168,25 +177,25 @@ void Game::CreateGeometry()
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 	std::shared_ptr<Material> basicMaterial2 = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 	std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 	std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 	std::shared_ptr<Material> customMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 
 
 	// Creating materials with textures from files
 	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 	lavaRockMaterial->AddSampler("BasicSampler", samplerState);
 	lavaRockMaterial->AddTextureSRV("SurfaceTexture", lavaRockSRV);
 
 	std::shared_ptr<Material> distortionMaterial = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
 	distortionMaterial->AddSampler("BasicSampler", samplerState);
 	distortionMaterial->AddTextureSRV("SurfaceTexture", SandSRV);
 

@@ -13,6 +13,7 @@ private:
 	DirectX::XMFLOAT4 tint;
 	DirectX::XMFLOAT2 scale;
 	DirectX::XMFLOAT2 offset;
+	float distortionStrength;
 	std::shared_ptr<SimpleVertexShader> vertexShader;
 	std::shared_ptr<SimplePixelShader> pixelShader;
 
@@ -25,7 +26,8 @@ public:
 		std::shared_ptr<SimpleVertexShader> vertexShader, 
 		std::shared_ptr<SimplePixelShader> pixelShader,
 		DirectX::XMFLOAT2 scale,
-		DirectX::XMFLOAT2 offset);
+		DirectX::XMFLOAT2 offset,
+		float distortionStrength);
 
 
 	//--------
@@ -34,6 +36,7 @@ public:
 	DirectX::XMFLOAT4 Tint();
 	DirectX::XMFLOAT2 Scale();
 	DirectX::XMFLOAT2 Offset();
+	float DistortionStrength();
 	std::shared_ptr<SimpleVertexShader> VertexShader();
 	std::shared_ptr<SimplePixelShader> PixelShader();
 
@@ -44,6 +47,7 @@ public:
 	void SetTint(DirectX::XMFLOAT4 tint);
 	void SetScale(DirectX::XMFLOAT2 scale);
 	void SetOffset(DirectX::XMFLOAT2 offset);
+	void SetDistortionStrength(float distortionStrength);
 	void SetVertexShader(std::shared_ptr<SimpleVertexShader> vertexShader);
 	void SetPixelShader(std::shared_ptr<SimplePixelShader> pixelShader);
 
