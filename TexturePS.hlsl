@@ -11,7 +11,7 @@ struct VertexToPixel
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
-	float4 screenPosition	: SV_POSITION;
+	float4 screenPosition : SV_POSITION;
 	float2 uv : TEXCOORD;
 	float3 normal : NORMAL;
 };
@@ -24,6 +24,8 @@ cbuffer ConstantBuffer : register(b0)
 }
 
 Texture2D SurfaceTexture : register(t0);
+
+Texture2D DistortionSurfaceTexture : register(t0);
 
 SamplerState BasicSampler : register(s0);
 

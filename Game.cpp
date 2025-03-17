@@ -163,6 +163,8 @@ void Game::CreateGeometry()
 		Graphics::Device, Graphics::Context, FixPath(L"DebugNormalsPS.cso").c_str());
 	std::shared_ptr<SimplePixelShader> customPixelShader = std::make_shared<SimplePixelShader>(
 		Graphics::Device, Graphics::Context, FixPath(L"CustomPS.cso").c_str());
+	std::shared_ptr<SimplePixelShader> texturePixelShader = std::make_shared<SimplePixelShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"TexturePS.cso").c_str());
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
@@ -176,16 +178,17 @@ void Game::CreateGeometry()
 	std::shared_ptr<Material> customMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 
+
 	// Creating materials with textures from files
 	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 	lavaRockMaterial->AddSampler("BasicSampler", samplerState);
 	lavaRockMaterial->AddTextureSRV("SurfaceTexture", lavaRockSRV);
 
-	std::shared_ptr<Material> SandMaterial = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(5, 5), XMFLOAT2(0, 0));
-	SandMaterial->AddSampler("BasicSampler", samplerState);
-	SandMaterial->AddTextureSRV("SurfaceTexture2", SandSRV);
+	std::shared_ptr<Material> distortionMaterial = std::make_shared<Material>(
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
+	distortionMaterial->AddSampler("BasicSampler", samplerState);
+	distortionMaterial->AddTextureSRV("SurfaceTexture", SandSRV);
 
 
 	//-----------------------
@@ -223,13 +226,13 @@ void Game::CreateGeometry()
 	entities.push_back(Entity(quadDoubleSided, uvMaterial));
 
 	// Add meshes to entitty list with custom material
-	entities.push_back(Entity(cube, SandMaterial));
-	entities.push_back(Entity(cylinder, basicMaterial2));
+	entities.push_back(Entity(cube, lavaRockMaterial));
+	entities.push_back(Entity(cylinder, distortionMaterial));
 	entities.push_back(Entity(helix, lavaRockMaterial));
-	entities.push_back(Entity(sphere, customMaterial));
-	entities.push_back(Entity(torus, SandMaterial));
-	entities.push_back(Entity(quad, basicMaterial2));
-	entities.push_back(Entity(quadDoubleSided, basicMaterial));
+	entities.push_back(Entity(sphere, distortionMaterial));
+	entities.push_back(Entity(torus, lavaRockMaterial));
+	entities.push_back(Entity(quad, distortionMaterial));
+	entities.push_back(Entity(quadDoubleSided, lavaRockMaterial));
 
 	// Offset to make rows
 	float verticalOffset = -1.0f;
