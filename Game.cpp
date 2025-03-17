@@ -85,7 +85,7 @@ void Game::Initialize()
 	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Initialize camera
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio()));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 5.0f, -15.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio()));
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio()));
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio()));
 
@@ -140,25 +140,29 @@ void Game::CreateGeometry()
 		Graphics::Device, Graphics::Context, FixPath(L"VertexShader.cso").c_str());
 	std::shared_ptr<SimplePixelShader> ps = std::make_shared<SimplePixelShader>(
 		Graphics::Device, Graphics::Context, FixPath(L"PixelShader.cso").c_str());
-	//std::shared_ptr<SimpleVertexShader> uvPixelShader = std::make_shared<SimpleVertexShader>(
-	//	Graphics::Device, Graphics::Context, FixPath(L"DebugUVsPS.cso").c_str());
-	//std::shared_ptr<SimplePixelShader> normalPixelShader = std::make_shared<SimplePixelShader>(
-	//	Graphics::Device, Graphics::Context, FixPath(L"DebugNormalsPS.cso").c_str());
+	std::shared_ptr<SimplePixelShader> uvPixelShader = std::make_shared<SimplePixelShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"DebugUVsPS.cso").c_str());
+	std::shared_ptr<SimplePixelShader> normalPixelShader = std::make_shared<SimplePixelShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"DebugNormalsPS.cso").c_str());
+	std::shared_ptr<SimplePixelShader> customPixelShader = std::make_shared<SimplePixelShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"CustomPS.cso").c_str());
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps); 
 	std::shared_ptr<Material> basicMaterial2 = std::make_shared<Material>(
 		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps);
-	//std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
-	//	XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader);
-	//std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
-	//	XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader);
+	std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader);
+	std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader);
+	std::shared_ptr<Material> customMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader);
 
 	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps);
-	lavaRockMaterial->AddSampler("sampler", samplerState);
-	lavaRockMaterial->AddTextureSRV("texture", textureResource);
+	lavaRockMaterial->AddSampler("BasicSampler", samplerState);
+	lavaRockMaterial->AddTextureSRV("SurfaceTexture", textureResource);
 
 	//--------------------
 	// Initializing 3D meshes
@@ -173,19 +177,49 @@ void Game::CreateGeometry()
 	std::shared_ptr<Mesh> quadDoubleSided = std::make_shared<Mesh>(FixPath("../../Assets/Models/quad_double_sided.obj").c_str());
 
 
-	// Add meshes to entitty list
-	entities.push_back(Entity(cube, lavaRockMaterial));
+	// Add meshes to entitty list with normal material
+	entities.push_back(Entity(cube, normalMaterial));
+	entities.push_back(Entity(cylinder, normalMaterial));
+	entities.push_back(Entity(helix, normalMaterial));
+	entities.push_back(Entity(sphere, normalMaterial));
+	entities.push_back(Entity(torus, normalMaterial));
+	entities.push_back(Entity(quad, normalMaterial));
+	entities.push_back(Entity(quadDoubleSided, normalMaterial));
+
+	// Number of shapes in each row, used for spacing out shapes without hard coding values
+	int numberOfShapesForRow = (int)entities.size();
+
+	// Add meshes to entitty list with UV material
+	entities.push_back(Entity(cube, uvMaterial));
+	entities.push_back(Entity(cylinder, uvMaterial));
+	entities.push_back(Entity(helix, uvMaterial));
+	entities.push_back(Entity(sphere, uvMaterial));
+	entities.push_back(Entity(torus, uvMaterial));
+	entities.push_back(Entity(quad, uvMaterial));
+	entities.push_back(Entity(quadDoubleSided, uvMaterial));
+
+	// Add meshes to entitty list with custom material
+	entities.push_back(Entity(cube, basicMaterial));
 	entities.push_back(Entity(cylinder, basicMaterial2));
-	entities.push_back(Entity(helix, basicMaterial));
-	entities.push_back(Entity(sphere, basicMaterial2));
-	entities.push_back(Entity(torus, basicMaterial));
+	entities.push_back(Entity(helix, lavaRockMaterial));
+	entities.push_back(Entity(sphere, customMaterial));
+	entities.push_back(Entity(torus, lavaRockMaterial));
 	entities.push_back(Entity(quad, basicMaterial2));
 	entities.push_back(Entity(quadDoubleSided, basicMaterial));
+
+	// Offset to make rows
+	float verticalOffset = -1.0f;
 
 	// Spacing out the entities
 	for (int i = 0; i < entities.size(); i++)
 	{
-		entities[i].GetTransform()->SetPosition(XMFLOAT3((3.0f * i) - 9.0f, 0.0f, 0.0f));
+		// Makes a new row once each shape has been displayed
+		if (i % numberOfShapesForRow == 0)
+		{
+			verticalOffset++;
+		}
+
+		entities[i].GetTransform()->SetPosition(XMFLOAT3((3.0f * (i % numberOfShapesForRow)) - 9.0f, (5.0f - (verticalOffset * 3)) , 0.0f));
 
 	}
 }
