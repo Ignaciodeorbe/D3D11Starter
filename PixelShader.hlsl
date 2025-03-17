@@ -19,9 +19,13 @@ struct VertexToPixel
 cbuffer ConstantBuffer : register(b0)
 {
 	float4 colorTint;
+	float2 scale;
+	float2 offset;
 }
 
 Texture2D SurfaceTexture : register(t0);
+
+Texture2D SurfaceTexture2 : register(t0);
 
 SamplerState BasicSampler : register(s0);
 
@@ -36,8 +40,11 @@ SamplerState BasicSampler : register(s0);
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
 {
+	// Adjusting scale and uv offset
+	input.uv = input.uv * scale + offset;
 
-	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
+	float4 surfaceColor = SurfaceTexture2.Sample(BasicSampler, input.uv);
+
 
 	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 

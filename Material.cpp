@@ -1,8 +1,8 @@
 #include "Material.h"
 
 
-Material::Material(DirectX::XMFLOAT4 tint, std::shared_ptr<SimpleVertexShader> vertexShader, std::shared_ptr<SimplePixelShader> pixelShader)
-	: tint(tint), vertexShader(vertexShader), pixelShader(pixelShader)
+Material::Material(DirectX::XMFLOAT4 tint, std::shared_ptr<SimpleVertexShader> vertexShader, std::shared_ptr<SimplePixelShader> pixelShader, DirectX::XMFLOAT2 scale, DirectX::XMFLOAT2 offset)
+	: tint(tint), vertexShader(vertexShader), pixelShader(pixelShader), scale(scale), offset(offset)
 {
 }
 
@@ -10,6 +10,8 @@ Material::Material(DirectX::XMFLOAT4 tint, std::shared_ptr<SimpleVertexShader> v
 // Getters
 //--------
 DirectX::XMFLOAT4 Material::Tint() { return tint; }
+DirectX::XMFLOAT2 Material::Scale() { return scale; }
+DirectX::XMFLOAT2 Material::Offset() { return offset; }
 std::shared_ptr<SimpleVertexShader> Material::VertexShader() { return vertexShader; }
 std::shared_ptr<SimplePixelShader> Material::PixelShader() { return pixelShader; }
 
@@ -18,6 +20,8 @@ std::shared_ptr<SimplePixelShader> Material::PixelShader() { return pixelShader;
 // Setters
 //--------
 void Material::SetTint(DirectX::XMFLOAT4 t) { tint = t; }
+void Material::SetScale(DirectX::XMFLOAT2 s) { scale = s; }
+void Material::SetOffset(DirectX::XMFLOAT2 o) { offset = o; }
 void Material::SetVertexShader(std::shared_ptr<SimpleVertexShader> vs) { vertexShader = vs; }
 void Material::SetPixelShader(std::shared_ptr<SimplePixelShader> ps) { pixelShader = ps; }
 
@@ -46,6 +50,8 @@ void Material::PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<T
 	vertexShader->SetMatrix4x4("projection", camera->ProjectionMatrix()); // shader’s cbuffer!
 
 	pixelShader->SetFloat4("colorTint", tint);
+	pixelShader->SetFloat2("scale", scale);
+	pixelShader->SetFloat2("offset", offset);
 	pixelShader->CopyAllBufferData();
 	vertexShader->CopyAllBufferData();
 

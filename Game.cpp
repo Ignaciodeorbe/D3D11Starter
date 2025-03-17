@@ -115,7 +115,6 @@ Game::~Game()
 void Game::CreateGeometry()
 {
 	// Local variables
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureResource;
 	D3D11_SAMPLER_DESC samplerDesc = {};
 
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -127,14 +126,32 @@ void Game::CreateGeometry()
 
 	Graphics::Device->CreateSamplerState(&samplerDesc, samplerState.GetAddressOf());
 
+	//--------------
+	// Load Textures
+	//--------------
+	
 	// Load Lava Rock texture
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> lavaRockSRV;
 	CreateWICTextureFromFile(
 		Graphics::Device.Get(),
 		Graphics::Context.Get(),
 		FixPath(L"../../Assets/Textures/LavaRockTexture.png").c_str(),
 		nullptr,
-		textureResource.GetAddressOf());
+		lavaRockSRV.GetAddressOf());
 
+	// Load stone floor texture
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SandSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/Sand.png").c_str(),
+		nullptr,
+		SandSRV.GetAddressOf());
+
+
+	//-----------------
+	// Making Materials
+	//-----------------
 
 	std::shared_ptr<SimpleVertexShader> vs = std::make_shared<SimpleVertexShader>(
 		Graphics::Device, Graphics::Context, FixPath(L"VertexShader.cso").c_str());
@@ -149,24 +166,31 @@ void Game::CreateGeometry()
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps); 
+		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 	std::shared_ptr<Material> basicMaterial2 = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps);
+		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 	std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader);
+		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 	std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader);
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 	std::shared_ptr<Material> customMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader);
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 
+	// Creating materials with textures from files
 	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps);
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0));
 	lavaRockMaterial->AddSampler("BasicSampler", samplerState);
-	lavaRockMaterial->AddTextureSRV("SurfaceTexture", textureResource);
+	lavaRockMaterial->AddTextureSRV("SurfaceTexture", lavaRockSRV);
 
-	//--------------------
+	std::shared_ptr<Material> SandMaterial = std::make_shared<Material>(
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(5, 5), XMFLOAT2(0, 0));
+	SandMaterial->AddSampler("BasicSampler", samplerState);
+	SandMaterial->AddTextureSRV("SurfaceTexture2", SandSRV);
+
+
+	//-----------------------
 	// Initializing 3D meshes
-	//--------------------
+	//-----------------------
 	
 	std::shared_ptr<Mesh> cube = std::make_shared<Mesh>(FixPath("../../Assets/Models/cube.obj").c_str());
 	std::shared_ptr<Mesh> cylinder = std::make_shared<Mesh>(FixPath("../../Assets/Models/cylinder.obj").c_str());
@@ -199,11 +223,11 @@ void Game::CreateGeometry()
 	entities.push_back(Entity(quadDoubleSided, uvMaterial));
 
 	// Add meshes to entitty list with custom material
-	entities.push_back(Entity(cube, basicMaterial));
+	entities.push_back(Entity(cube, SandMaterial));
 	entities.push_back(Entity(cylinder, basicMaterial2));
 	entities.push_back(Entity(helix, lavaRockMaterial));
 	entities.push_back(Entity(sphere, customMaterial));
-	entities.push_back(Entity(torus, lavaRockMaterial));
+	entities.push_back(Entity(torus, SandMaterial));
 	entities.push_back(Entity(quad, basicMaterial2));
 	entities.push_back(Entity(quadDoubleSided, basicMaterial));
 
