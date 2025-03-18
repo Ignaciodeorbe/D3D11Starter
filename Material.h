@@ -14,6 +14,7 @@ private:
 	DirectX::XMFLOAT2 scale;
 	DirectX::XMFLOAT2 offset;
 	float distortionStrength;
+	float time;
 	std::shared_ptr<SimpleVertexShader> vertexShader;
 	std::shared_ptr<SimplePixelShader> pixelShader;
 
@@ -29,7 +30,8 @@ public:
 		std::shared_ptr<SimplePixelShader> pixelShader,
 		DirectX::XMFLOAT2 scale,
 		DirectX::XMFLOAT2 offset,
-		float distortionStrength);
+		float distortionStrength,
+		float time);
 
 
 	//--------
@@ -39,6 +41,7 @@ public:
 	DirectX::XMFLOAT2 Scale();
 	DirectX::XMFLOAT2 Offset();
 	float DistortionStrength();
+	float Time();
 	std::shared_ptr<SimpleVertexShader> VertexShader();
 	std::shared_ptr<SimplePixelShader> PixelShader();
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetTextureSRV();
@@ -52,6 +55,7 @@ public:
 	void SetScale(DirectX::XMFLOAT2 scale);
 	void SetOffset(DirectX::XMFLOAT2 offset);
 	void SetDistortionStrength(float distortionStrength);
+	void SetTime(float time);
 	void SetVertexShader(std::shared_ptr<SimpleVertexShader> vertexShader);
 	void SetPixelShader(std::shared_ptr<SimplePixelShader> pixelShader);
 
@@ -60,6 +64,6 @@ public:
 	//--------
 	void AddTextureSRV(std::string shaderVariableName, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv);
 	void AddSampler(std::string shaderVariableName, Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler);
-	void PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<Transform> transform);
+	void PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<Transform> transform, float deltaTime);
 
 };

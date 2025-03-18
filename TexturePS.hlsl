@@ -22,6 +22,7 @@ cbuffer ConstantBuffer : register(b0)
 	float2 scale;
 	float2 offset;
 	float distortionStrength;
+	float time;
 }
 
 Texture2D SurfaceTexture : register(t0);
@@ -46,7 +47,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	// Sample distortion texture
 	float2 distortion = DistortionSurfaceTexture.Sample(BasicSampler, input.uv).rg * 2.0 - 1.0;
-	distortion *= distortionStrength; 
+	distortion *= distortionStrength + sin(time) / 4.0;
 	
 	// Apply distortion to UVs
 	float2 distortedUV = input.uv + distortion;

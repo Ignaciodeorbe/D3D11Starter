@@ -1,8 +1,10 @@
 #include "Material.h"
 
 
-Material::Material(DirectX::XMFLOAT4 tint, std::shared_ptr<SimpleVertexShader> vertexShader, std::shared_ptr<SimplePixelShader> pixelShader, DirectX::XMFLOAT2 scale, DirectX::XMFLOAT2 offset, float distortionStrength)
-	: tint(tint), vertexShader(vertexShader), pixelShader(pixelShader), scale(scale), offset(offset), distortionStrength(distortionStrength)
+Material::Material(DirectX::XMFLOAT4 tint, std::shared_ptr<SimpleVertexShader> vertexShader, 
+	std::shared_ptr<SimplePixelShader> pixelShader, DirectX::XMFLOAT2 scale, 
+	DirectX::XMFLOAT2 offset, float distortionStrength, float time)
+	: tint(tint), vertexShader(vertexShader), pixelShader(pixelShader), scale(scale), offset(offset), distortionStrength(distortionStrength), time(time)
 {
 }
 
@@ -13,6 +15,7 @@ DirectX::XMFLOAT4 Material::Tint() { return tint; }
 DirectX::XMFLOAT2 Material::Scale() { return scale; }
 DirectX::XMFLOAT2 Material::Offset() { return offset; }
 float Material::DistortionStrength() { return distortionStrength; }
+float Material::Time() { return time; }
 std::shared_ptr<SimpleVertexShader> Material::VertexShader() { return vertexShader; }
 std::shared_ptr<SimplePixelShader> Material::PixelShader() { return pixelShader; }
 
@@ -40,6 +43,7 @@ void Material::SetTint(DirectX::XMFLOAT4 t) { tint = t; }
 void Material::SetScale(DirectX::XMFLOAT2 s) { scale = s; }
 void Material::SetOffset(DirectX::XMFLOAT2 o) { offset = o; }
 void Material::SetDistortionStrength(float distortion) { distortionStrength = distortion; }
+void Material::SetTime(float t) { time = t; }
 void Material::SetVertexShader(std::shared_ptr<SimpleVertexShader> vs) { vertexShader = vs; }
 void Material::SetPixelShader(std::shared_ptr<SimplePixelShader> ps) { pixelShader = ps; }
 
@@ -57,7 +61,7 @@ void Material::AddSampler(std::string shaderVariableName, Microsoft::WRL::ComPtr
 }
 
 
-void Material::PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<Transform> transform)
+void Material::PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<Transform> transform, float totalTime)
 {
 
 	vertexShader->SetShader();
@@ -72,6 +76,7 @@ void Material::PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<T
 	pixelShader->SetFloat2("scale", scale);
 	pixelShader->SetFloat2("offset", offset);
 	pixelShader->SetFloat("distortionStrength", distortionStrength);
+	pixelShader->SetFloat("time", totalTime);
 	pixelShader->CopyAllBufferData();
 	vertexShader->CopyAllBufferData();
 

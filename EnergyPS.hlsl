@@ -11,7 +11,7 @@ struct VertexToPixel
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
-	float4 screenPosition	: SV_POSITION;
+	float4 screenPosition : SV_POSITION;
 	float2 uv : TEXCOORD;
 	float3 normal : NORMAL;
 };
@@ -27,6 +27,8 @@ cbuffer ConstantBuffer : register(b0)
 
 Texture2D SurfaceTexture : register(t0);
 
+Texture2D EnergySurfaceTexture : register(t1);
+
 SamplerState BasicSampler : register(s0);
 
 // --------------------------------------------------------
@@ -40,15 +42,25 @@ SamplerState BasicSampler : register(s0);
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	// Adjusting scale and uv offset
+	// Adjust scale and UV offset
 	input.uv = input.uv * scale + offset;
 
-	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
-
-
-	// Just return the input color
-	// - This color (like most values passing through the rasterizer) is 
-	//   interpolated for each pixel between the corresponding vertices 
-	//   of the triangle we're rendering
-	return surfaceColor * colorTint;
+	// Animate the distortion over time
+	float2 animatedUV = input.uv + float2(0, time * 0.2); // Scrolls vertically
+	
+	// Sample the distortion texture
+	float2 distortion = EnergySurfaceTexture.Sample(BasicSampler, animatedUV).rg * sin(time) - 1.0;
+	distortion *= distortionStrength; 
+	
+	// Apply distortion to UVs
+	float2 distortedUV = input.uv + distortion;
+	
+	// Sample the texture using the distorted UVs
+	float4 fireColor = SurfaceTexture.Sample(BasicSampler, distortedUV);
+	
+	// Increase brightness for an emissive effect
+	fireColor.rgb += fireColor.rgb * 0.5;
+	
+	// Apply tint and return final color
+	return fireColor * colorTint;
 }

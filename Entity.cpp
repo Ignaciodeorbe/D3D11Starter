@@ -29,9 +29,9 @@ void Entity::SetMaterial(std::shared_ptr<Material> mat) { material = mat; }
 /// </summary>
 /// <param name="constantBuffer">The constant buffer that holds the transformation data for the vertex shader</param>
 /// <param name="vertexShaderData">The data that will be sent to the vertex shader (like tint and transforms</param>
-void Entity::Draw(std::shared_ptr<Camera> camera)
+void Entity::Draw(std::shared_ptr<Camera> camera, float time)
 {
-	material->PrepareMaterial(camera, transform);
+	material->PrepareMaterial(camera, transform, time);
 
 	// Draw the mesh 
 	mesh->Draw();

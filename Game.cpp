@@ -148,7 +148,7 @@ void Game::CreateGeometry()
 		nullptr,
 		sandSRV.GetAddressOf());
 
-	// Load distortion texture texture
+	// Load distortion texture 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> distortionSRV;
 	CreateWICTextureFromFile(
 		Graphics::Device.Get(),
@@ -156,6 +156,24 @@ void Game::CreateGeometry()
 		FixPath(L"../../Assets/Textures/shaderNoise.png").c_str(),
 		nullptr,
 		distortionSRV.GetAddressOf());
+
+	// Load distortion texture 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> fireSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/Explosion.png").c_str(),
+		nullptr,
+		fireSRV.GetAddressOf());
+
+	// Load energy texture 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> energySRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/Plasma2.png").c_str(),
+		nullptr,
+		energySRV.GetAddressOf());
 
 
 	//-----------------
@@ -174,39 +192,47 @@ void Game::CreateGeometry()
 		Graphics::Device, Graphics::Context, FixPath(L"CustomPS.cso").c_str());
 	std::shared_ptr<SimplePixelShader> texturePixelShader = std::make_shared<SimplePixelShader>(
 		Graphics::Device, Graphics::Context, FixPath(L"TexturePS.cso").c_str());
+	std::shared_ptr<SimplePixelShader> energyPixelShader = std::make_shared<SimplePixelShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"EnergyPS.cso").c_str());
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 	std::shared_ptr<Material> basicMaterial2 = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 	std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), vs, uvPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 	std::shared_ptr<Material> normalMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, normalPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 	std::shared_ptr<Material> customMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 
 
 	// Creating materials with textures from files
 	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 	lavaRockMaterial->AddSampler("BasicSampler", samplerState);
 	lavaRockMaterial->AddTextureSRV("SurfaceTexture", lavaRockSRV);
 
 	std::shared_ptr<Material> sandMaterial = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
 	sandMaterial->AddSampler("BasicSampler", samplerState);
 	sandMaterial->AddTextureSRV("SurfaceTexture", sandSRV);
-
-	std::shared_ptr<Material> distortionMaterial = std::make_shared<Material>(
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
-	sandMaterial->AddSampler("BasicSampler", samplerState);
 	sandMaterial->AddTextureSRV("DistortionSurfaceTexture", distortionSRV);
+
+
+	std::shared_ptr<Material> fireMaterial = std::make_shared<Material>(
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, energyPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
+	fireMaterial->AddSampler("BasicSampler", samplerState);
+	fireMaterial->AddTextureSRV("SurfaceTexture", fireSRV);
+	fireMaterial->AddTextureSRV("EnergySurfaceTexture", energySRV);
+
 
 	// Adding materials to a list
 	materials.push_back(lavaRockMaterial);
 	materials.push_back(sandMaterial);
+	materials.push_back(fireMaterial);
+
 
 
 	//-----------------------
@@ -244,10 +270,10 @@ void Game::CreateGeometry()
 	//entities.push_back(Entity(quadDoubleSided, uvMaterial));
 
 	// Add meshes to entitty list with custom material
-	entities.push_back(Entity(cube, lavaRockMaterial));
+	entities.push_back(Entity(cube, fireMaterial));
 	entities.push_back(Entity(cylinder, sandMaterial));
-	entities.push_back(Entity(helix, lavaRockMaterial));
-	entities.push_back(Entity(sphere, sandMaterial));
+	entities.push_back(Entity(helix, fireMaterial));
+	entities.push_back(Entity(sphere, fireMaterial));
 	entities.push_back(Entity(torus, lavaRockMaterial));
 	entities.push_back(Entity(quad, sandMaterial));
 	entities.push_back(Entity(quadDoubleSided, lavaRockMaterial));
@@ -347,7 +373,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	// Draw Geometry
 	for (int i = 0; i < entities.size(); i++)
 	{
-			entities[i].Draw(currentCamera);
+			entities[i].Draw(currentCamera, totalTime);
 	}
 
 
@@ -617,7 +643,7 @@ void Game::CreateUI()
 				materials[i]->SetOffset(materialOffset);
 
 			// Set the Distortion
-			if (ImGui::DragFloat("Distortion", &materialDistortionStrength, 0.01f))
+			if (ImGui::DragFloat("Distortion", &materialDistortionStrength, 0.001f, 0.0f, 1.0f))
 				materials[i]->SetDistortionStrength(materialDistortionStrength);
 
 

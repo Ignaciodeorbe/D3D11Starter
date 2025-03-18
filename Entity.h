@@ -42,5 +42,5 @@ public:
 	// Methods
 	//--------
 
-	void Draw(std::shared_ptr<Camera> camera);
+	void Draw(std::shared_ptr<Camera> camera, float time);
 };
