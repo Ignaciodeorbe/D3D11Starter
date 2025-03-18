@@ -140,22 +140,22 @@ void Game::CreateGeometry()
 		lavaRockSRV.GetAddressOf());
 
 	// Load sand texture
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SandSRV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> sandSRV;
 	CreateWICTextureFromFile(
 		Graphics::Device.Get(),
 		Graphics::Context.Get(),
 		FixPath(L"../../Assets/Textures/Sand.png").c_str(),
 		nullptr,
-		SandSRV.GetAddressOf());
+		sandSRV.GetAddressOf());
 
 	// Load distortion texture texture
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SandSRV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> distortionSRV;
 	CreateWICTextureFromFile(
 		Graphics::Device.Get(),
 		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/Sand.png").c_str(),
+		FixPath(L"../../Assets/Textures/shaderNoise.png").c_str(),
 		nullptr,
-		SandSRV.GetAddressOf());
+		distortionSRV.GetAddressOf());
 
 
 	//-----------------
@@ -194,10 +194,15 @@ void Game::CreateGeometry()
 	lavaRockMaterial->AddSampler("BasicSampler", samplerState);
 	lavaRockMaterial->AddTextureSRV("SurfaceTexture", lavaRockSRV);
 
+	std::shared_ptr<Material> sandMaterial = std::make_shared<Material>(
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
+	sandMaterial->AddSampler("BasicSampler", samplerState);
+	sandMaterial->AddTextureSRV("SurfaceTexture", sandSRV);
+
 	std::shared_ptr<Material> distortionMaterial = std::make_shared<Material>(
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, texturePixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f);
-	distortionMaterial->AddSampler("BasicSampler", samplerState);
-	distortionMaterial->AddTextureSRV("SurfaceTexture", SandSRV);
+	sandMaterial->AddSampler("BasicSampler", samplerState);
+	sandMaterial->AddTextureSRV("DistortionSurfaceTexture", distortionSRV);
 
 
 	//-----------------------
@@ -213,35 +218,38 @@ void Game::CreateGeometry()
 	std::shared_ptr<Mesh> quadDoubleSided = std::make_shared<Mesh>(FixPath("../../Assets/Models/quad_double_sided.obj").c_str());
 
 
-	// Add meshes to entitty list with normal material
-	entities.push_back(Entity(cube, normalMaterial));
-	entities.push_back(Entity(cylinder, normalMaterial));
-	entities.push_back(Entity(helix, normalMaterial));
-	entities.push_back(Entity(sphere, normalMaterial));
-	entities.push_back(Entity(torus, normalMaterial));
-	entities.push_back(Entity(quad, normalMaterial));
-	entities.push_back(Entity(quadDoubleSided, normalMaterial));
-
-	// Number of shapes in each row, used for spacing out shapes without hard coding values
-	int numberOfShapesForRow = (int)entities.size();
-
-	// Add meshes to entitty list with UV material
-	entities.push_back(Entity(cube, uvMaterial));
-	entities.push_back(Entity(cylinder, uvMaterial));
-	entities.push_back(Entity(helix, uvMaterial));
-	entities.push_back(Entity(sphere, uvMaterial));
-	entities.push_back(Entity(torus, uvMaterial));
-	entities.push_back(Entity(quad, uvMaterial));
-	entities.push_back(Entity(quadDoubleSided, uvMaterial));
+	//// Add meshes to entitty list with normal material
+	//entities.push_back(Entity(cube, normalMaterial));
+	//entities.push_back(Entity(cylinder, normalMaterial));
+	//entities.push_back(Entity(helix, normalMaterial));
+	//entities.push_back(Entity(sphere, normalMaterial));
+	//entities.push_back(Entity(torus, normalMaterial));
+	//entities.push_back(Entity(quad, normalMaterial));
+	//entities.push_back(Entity(quadDoubleSided, normalMaterial));
+	//
+	//// Number of shapes in each row, used for spacing out shapes without hard coding values
+	//int numberOfShapesForRow = (int)entities.size();
+	//
+	//// Add meshes to entitty list with UV material
+	//entities.push_back(Entity(cube, uvMaterial));
+	//entities.push_back(Entity(cylinder, uvMaterial));
+	//entities.push_back(Entity(helix, uvMaterial));
+	//entities.push_back(Entity(sphere, uvMaterial));
+	//entities.push_back(Entity(torus, uvMaterial));
+	//entities.push_back(Entity(quad, uvMaterial));
+	//entities.push_back(Entity(quadDoubleSided, uvMaterial));
 
 	// Add meshes to entitty list with custom material
 	entities.push_back(Entity(cube, lavaRockMaterial));
-	entities.push_back(Entity(cylinder, distortionMaterial));
+	entities.push_back(Entity(cylinder, sandMaterial));
 	entities.push_back(Entity(helix, lavaRockMaterial));
-	entities.push_back(Entity(sphere, distortionMaterial));
+	entities.push_back(Entity(sphere, sandMaterial));
 	entities.push_back(Entity(torus, lavaRockMaterial));
-	entities.push_back(Entity(quad, distortionMaterial));
+	entities.push_back(Entity(quad, sandMaterial));
 	entities.push_back(Entity(quadDoubleSided, lavaRockMaterial));
+
+	// Number of shapes in each row, used for spacing out shapes without hard coding values
+	int numberOfShapesForRow = (int)entities.size();
 
 	// Offset to make rows
 	float verticalOffset = -1.0f;
@@ -572,6 +580,45 @@ void Game::CreateUI()
 			ImGui::PopID();
 		}
 
+
+		ImGui::Unindent(20.0f);
+	}
+
+
+	// Allows user to switch between materials and adjust materials
+	if (ImGui::CollapsingHeader("Materials"))
+	{
+		ImGui::Indent(20.0f); // Indent to make the data more organized
+
+		for (int i = 0; i < entities.size(); i++)
+		{
+			ImGui::PushID(i);
+
+			// Storing changable material values
+			XMFLOAT4 materialTint = entities[i].GetMaterial()->Tint();
+			XMFLOAT2 materialScale = entities[i].GetMaterial()->Scale();
+			XMFLOAT2 materialOffset = entities[i].GetMaterial()->Offset();
+			float materialDistortionStrength = entities[i].GetMaterial()->DistortionStrength();
+
+			// Set the material color
+			ImGui::ColorEdit4("RGBA material tint color picker", &materialTint.x);
+			entities[i].GetMaterial()->SetTint(materialTint);
+
+			// Set the material scale
+			if (ImGui::DragFloat2("Scale", &materialScale.x, 0.01f))
+				entities[i].GetMaterial()->SetScale(materialScale);
+
+			// Set the Offset
+			if (ImGui::DragFloat2("Offset", &materialOffset.x, 0.01f))
+				entities[i].GetMaterial()->SetOffset(materialOffset);
+
+			// Set the Distortion
+			if (ImGui::DragFloat("Distortion", &materialDistortionStrength, 0.01f))
+				entities[i].GetMaterial()->SetDistortionStrength(materialDistortionStrength);
+
+			ImGui::PopID();
+
+		}
 
 		ImGui::Unindent(20.0f);
 	}
