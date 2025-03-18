@@ -16,6 +16,22 @@ float Material::DistortionStrength() { return distortionStrength; }
 std::shared_ptr<SimpleVertexShader> Material::VertexShader() { return vertexShader; }
 std::shared_ptr<SimplePixelShader> Material::PixelShader() { return pixelShader; }
 
+Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> Material::GetTextureSRV()
+{
+	// Search for texture
+	auto it = textureSRVs.find(shaderName);
+
+	// Return the found texture
+	if (it != textureSRVs.end())
+	{
+		return it->second;  
+	}
+
+	return nullptr;
+}
+
+std::string Material::ShaderName() { return shaderName; }
+
 
 //--------
 // Setters
@@ -30,6 +46,7 @@ void Material::SetPixelShader(std::shared_ptr<SimplePixelShader> ps) { pixelShad
 void Material::AddTextureSRV(std::string shaderVariableName, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv)
 {
 	textureSRVs.insert({ shaderVariableName, srv });
+	shaderName = shaderVariableName;
 
 }
 

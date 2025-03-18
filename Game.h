@@ -66,6 +66,7 @@ private:
 
 	// Camera shared pointer
 	std::vector<std::shared_ptr<Camera>> cameras;
+	std::vector<std::shared_ptr<Material>> materials;
 
 	Microsoft::WRL::ComPtr<ID3D11SamplerState > samplerState;
 };

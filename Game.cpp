@@ -204,6 +204,10 @@ void Game::CreateGeometry()
 	sandMaterial->AddSampler("BasicSampler", samplerState);
 	sandMaterial->AddTextureSRV("DistortionSurfaceTexture", distortionSRV);
 
+	// Adding materials to a list
+	materials.push_back(lavaRockMaterial);
+	materials.push_back(sandMaterial);
+
 
 	//-----------------------
 	// Initializing 3D meshes
@@ -590,31 +594,44 @@ void Game::CreateUI()
 	{
 		ImGui::Indent(20.0f); // Indent to make the data more organized
 
-		for (int i = 0; i < entities.size(); i++)
+		for (int i = 0; i < materials.size(); i++)
 		{
 			ImGui::PushID(i);
 
 			// Storing changable material values
-			XMFLOAT4 materialTint = entities[i].GetMaterial()->Tint();
-			XMFLOAT2 materialScale = entities[i].GetMaterial()->Scale();
-			XMFLOAT2 materialOffset = entities[i].GetMaterial()->Offset();
-			float materialDistortionStrength = entities[i].GetMaterial()->DistortionStrength();
+			XMFLOAT4 materialTint = materials[i]->Tint();
+			XMFLOAT2 materialScale = materials[i]->Scale();
+			XMFLOAT2 materialOffset = materials[i]->Offset();
+			float materialDistortionStrength = materials[i]->DistortionStrength();
 
 			// Set the material color
 			ImGui::ColorEdit4("RGBA material tint color picker", &materialTint.x);
-			entities[i].GetMaterial()->SetTint(materialTint);
+			materials[i]->SetTint(materialTint);
 
 			// Set the material scale
 			if (ImGui::DragFloat2("Scale", &materialScale.x, 0.01f))
-				entities[i].GetMaterial()->SetScale(materialScale);
+				materials[i]->SetScale(materialScale);
 
 			// Set the Offset
 			if (ImGui::DragFloat2("Offset", &materialOffset.x, 0.01f))
-				entities[i].GetMaterial()->SetOffset(materialOffset);
+				materials[i]->SetOffset(materialOffset);
 
 			// Set the Distortion
 			if (ImGui::DragFloat("Distortion", &materialDistortionStrength, 0.01f))
-				entities[i].GetMaterial()->SetDistortionStrength(materialDistortionStrength);
+				materials[i]->SetDistortionStrength(materialDistortionStrength);
+
+
+			// Display the texture
+			auto textureSRV = materials[i]->GetTextureSRV();
+			if (textureSRV)
+			{
+				ImGui::Image((ImTextureID)textureSRV.Get(), ImVec2(256, 256));
+			}
+			else
+			{
+				ImGui::Text("No Texture");
+			}
+
 
 			ImGui::PopID();
 

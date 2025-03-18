@@ -20,6 +20,8 @@ private:
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textureSRVs;
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D11SamplerState>> samplers;
 
+	std::string shaderName;
+
 
 public:
 	Material(DirectX::XMFLOAT4 tint, 
@@ -39,6 +41,8 @@ public:
 	float DistortionStrength();
 	std::shared_ptr<SimpleVertexShader> VertexShader();
 	std::shared_ptr<SimplePixelShader> PixelShader();
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetTextureSRV();
+	std::string ShaderName();
 
 
 	//--------
