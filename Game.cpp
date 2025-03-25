@@ -85,7 +85,7 @@ void Game::Initialize()
 	colorTint = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Initialize camera
-	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 5.0f, -15.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio()));
+	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(0.0f, 9.0f, -15.0f), 5.0f, 0.01f, XM_PIDIV4, Window::AspectRatio()));
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio()));
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio()));
 
@@ -207,7 +207,6 @@ void Game::CreateGeometry()
 	std::shared_ptr<Material> customMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), vs, customPixelShader, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 
-
 	// Creating materials with textures from files
 	std::shared_ptr<Material> lavaRockMaterial = std::make_shared<Material>(
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
@@ -234,7 +233,6 @@ void Game::CreateGeometry()
 	materials.push_back(fireMaterial);
 
 
-
 	//-----------------------
 	// Initializing 3D meshes
 	//-----------------------
@@ -248,38 +246,38 @@ void Game::CreateGeometry()
 	std::shared_ptr<Mesh> quadDoubleSided = std::make_shared<Mesh>(FixPath("../../Assets/Models/quad_double_sided.obj").c_str());
 
 
-	//// Add meshes to entitty list with normal material
-	//entities.push_back(Entity(cube, normalMaterial));
-	//entities.push_back(Entity(cylinder, normalMaterial));
-	//entities.push_back(Entity(helix, normalMaterial));
-	//entities.push_back(Entity(sphere, normalMaterial));
-	//entities.push_back(Entity(torus, normalMaterial));
-	//entities.push_back(Entity(quad, normalMaterial));
-	//entities.push_back(Entity(quadDoubleSided, normalMaterial));
-	//
-	//// Number of shapes in each row, used for spacing out shapes without hard coding values
-	//int numberOfShapesForRow = (int)entities.size();
-	//
-	//// Add meshes to entitty list with UV material
-	//entities.push_back(Entity(cube, uvMaterial));
-	//entities.push_back(Entity(cylinder, uvMaterial));
-	//entities.push_back(Entity(helix, uvMaterial));
-	//entities.push_back(Entity(sphere, uvMaterial));
-	//entities.push_back(Entity(torus, uvMaterial));
-	//entities.push_back(Entity(quad, uvMaterial));
-	//entities.push_back(Entity(quadDoubleSided, uvMaterial));
+	// Add meshes to entitty list with normal material
+	entities.push_back(Entity(cube, normalMaterial));
+	entities.push_back(Entity(cylinder, normalMaterial));
+	entities.push_back(Entity(helix, normalMaterial));
+	entities.push_back(Entity(sphere, normalMaterial));
+	entities.push_back(Entity(torus, normalMaterial));
+	entities.push_back(Entity(quad, normalMaterial));
+	entities.push_back(Entity(quadDoubleSided, normalMaterial));
+	
+	// Number of shapes in each row, used for spacing out shapes without hard coding values
+	int numberOfShapesForRow = (int)entities.size();
+	
+	// Add meshes to entitty list with UV material
+	entities.push_back(Entity(cube, uvMaterial));
+	entities.push_back(Entity(cylinder, uvMaterial));
+	entities.push_back(Entity(helix, uvMaterial));
+	entities.push_back(Entity(sphere, uvMaterial));
+	entities.push_back(Entity(torus, uvMaterial));
+	entities.push_back(Entity(quad, uvMaterial));
+	entities.push_back(Entity(quadDoubleSided, uvMaterial));
 
 	// Add meshes to entitty list with custom material
 	entities.push_back(Entity(cube, fireMaterial));
 	entities.push_back(Entity(cylinder, sandMaterial));
-	entities.push_back(Entity(helix, fireMaterial));
+	entities.push_back(Entity(helix, lavaRockMaterial));
 	entities.push_back(Entity(sphere, fireMaterial));
-	entities.push_back(Entity(torus, lavaRockMaterial));
+	entities.push_back(Entity(torus, customMaterial));
 	entities.push_back(Entity(quad, sandMaterial));
-	entities.push_back(Entity(quadDoubleSided, lavaRockMaterial));
+	entities.push_back(Entity(quadDoubleSided, customMaterial));
 
 	// Number of shapes in each row, used for spacing out shapes without hard coding values
-	int numberOfShapesForRow = (int)entities.size();
+	//int numberOfShapesForRow = (int)entities.size();
 
 	// Offset to make rows
 	float verticalOffset = -1.0f;
