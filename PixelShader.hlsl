@@ -8,6 +8,8 @@ cbuffer ConstantBuffer : register(b0)
 	float2 offset;
 	float distortionStrength;
 	float time;
+	float roughness;
+	float3 cameraPosition;
 }
 
 Texture2D SurfaceTexture : register(t0);

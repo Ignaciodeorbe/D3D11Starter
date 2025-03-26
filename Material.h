@@ -15,6 +15,7 @@ private:
 	DirectX::XMFLOAT2 offset;
 	float distortionStrength;
 	float time;
+	float roughness;
 	std::shared_ptr<SimpleVertexShader> vertexShader;
 	std::shared_ptr<SimplePixelShader> pixelShader;
 
@@ -30,8 +31,9 @@ public:
 		std::shared_ptr<SimplePixelShader> pixelShader,
 		DirectX::XMFLOAT2 scale,
 		DirectX::XMFLOAT2 offset,
-		float distortionStrength,
-		float time);
+		float distortionStrength = 1.0f,
+		float time = 0.0f,
+		float roughness = 1.0f);
 
 
 	//--------
@@ -42,6 +44,7 @@ public:
 	DirectX::XMFLOAT2 Offset();
 	float DistortionStrength();
 	float Time();
+	float Roughness();
 	std::shared_ptr<SimpleVertexShader> VertexShader();
 	std::shared_ptr<SimplePixelShader> PixelShader();
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetTextureSRV();
@@ -56,6 +59,7 @@ public:
 	void SetOffset(DirectX::XMFLOAT2 offset);
 	void SetDistortionStrength(float distortionStrength);
 	void SetTime(float time);
+	void SetRoughness(float roughness);
 	void SetVertexShader(std::shared_ptr<SimpleVertexShader> vertexShader);
 	void SetPixelShader(std::shared_ptr<SimplePixelShader> pixelShader);
 

@@ -3,8 +3,8 @@
 
 Material::Material(DirectX::XMFLOAT4 tint, std::shared_ptr<SimpleVertexShader> vertexShader, 
 	std::shared_ptr<SimplePixelShader> pixelShader, DirectX::XMFLOAT2 scale, 
-	DirectX::XMFLOAT2 offset, float distortionStrength, float time)
-	: tint(tint), vertexShader(vertexShader), pixelShader(pixelShader), scale(scale), offset(offset), distortionStrength(distortionStrength), time(time)
+	DirectX::XMFLOAT2 offset, float distortionStrength, float time, float roughness)
+	: tint(tint), vertexShader(vertexShader), pixelShader(pixelShader), scale(scale), offset(offset), distortionStrength(distortionStrength), time(time), roughness(roughness)
 {
 }
 
@@ -77,6 +77,8 @@ void Material::PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<T
 	pixelShader->SetFloat2("offset", offset);
 	pixelShader->SetFloat("distortionStrength", distortionStrength);
 	pixelShader->SetFloat("time", totalTime);
+	pixelShader->SetFloat("roughness", roughness);
+	pixelShader->SetFloat3("cameraPosition", camera->GetTransform().GetPosition());
 	pixelShader->CopyAllBufferData();
 	vertexShader->CopyAllBufferData();
 

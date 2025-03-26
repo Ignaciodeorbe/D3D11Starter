@@ -259,7 +259,7 @@ void Game::CreateGeometry()
 	int numberOfShapesForRow = (int)entities.size();
 	
 	// Add meshes to entitty list with UV material
-	entities.push_back(Entity(cube, uvMaterial));
+	entities.push_back(Entity(cube, basicMaterial));
 	entities.push_back(Entity(cylinder, uvMaterial));
 	entities.push_back(Entity(helix, uvMaterial));
 	entities.push_back(Entity(sphere, uvMaterial));
