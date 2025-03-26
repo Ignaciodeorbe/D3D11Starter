@@ -47,6 +47,8 @@ public:
 	// Track the current camera
 	std::shared_ptr<Camera> currentCamera;
 
+	DirectX::XMFLOAT3 ambientColor;
+
 
 private:
 

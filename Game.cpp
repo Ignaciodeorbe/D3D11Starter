@@ -89,7 +89,11 @@ void Game::Initialize()
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(5.0f, 0.0f, -5.0f), 5.0f, 0.01f, XM_PIDIV2, Window::AspectRatio()));
 	cameras.push_back(std::make_shared<Camera>(XMFLOAT3(-2.0f, 0.0f, -7.0f), 5.0f, 0.01f, 1.0f, Window::AspectRatio()));
 
+	// Set the current camera
 	currentCamera = cameras[0];
+
+	// Set ambient color
+	ambientColor = XMFLOAT3(0.1, 0.1, 0.25);
 
 }
 
@@ -197,7 +201,8 @@ void Game::CreateGeometry()
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
-		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
+	basicMaterial->AddSampler("BasicSampler", samplerState);
 	std::shared_ptr<Material> basicMaterial2 = std::make_shared<Material>(
 		XMFLOAT4(0.5f, 0.0f, 0.70f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 1.0f, 0.0f);
 	std::shared_ptr<Material> uvMaterial = std::make_shared<Material>(
@@ -260,12 +265,12 @@ void Game::CreateGeometry()
 	
 	// Add meshes to entitty list with UV material
 	entities.push_back(Entity(cube, basicMaterial));
-	entities.push_back(Entity(cylinder, uvMaterial));
-	entities.push_back(Entity(helix, uvMaterial));
-	entities.push_back(Entity(sphere, uvMaterial));
-	entities.push_back(Entity(torus, uvMaterial));
-	entities.push_back(Entity(quad, uvMaterial));
-	entities.push_back(Entity(quadDoubleSided, uvMaterial));
+	entities.push_back(Entity(cylinder, basicMaterial));
+	entities.push_back(Entity(helix, basicMaterial));
+	entities.push_back(Entity(sphere, basicMaterial));
+	entities.push_back(Entity(torus, basicMaterial));
+	entities.push_back(Entity(quad, basicMaterial));
+	entities.push_back(Entity(quadDoubleSided, basicMaterial));
 
 	// Add meshes to entitty list with custom material
 	entities.push_back(Entity(cube, fireMaterial));
@@ -372,6 +377,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	for (int i = 0; i < entities.size(); i++)
 	{
 			entities[i].Draw(currentCamera, totalTime);
+			entities[i].GetMaterial()->PixelShader()->SetFloat3("ambient", ambientColor);
 	}
 
 

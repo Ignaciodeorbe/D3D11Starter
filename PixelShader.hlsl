@@ -10,6 +10,7 @@ cbuffer ConstantBuffer : register(b0)
 	float time;
 	float roughness;
 	float3 cameraPosition;
+	float3 ambient;
 }
 
 Texture2D SurfaceTexture : register(t0);
@@ -32,10 +33,11 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
 
+	float4 ambientColor = float4(ambient, 1.0f);
 
 	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
-	return surfaceColor * colorTint;
+	return surfaceColor * colorTint * ambientColor;
 }
