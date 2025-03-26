@@ -93,7 +93,7 @@ void Game::Initialize()
 	currentCamera = cameras[0];
 
 	// Set ambient color
-	ambientColor = XMFLOAT3(0.1, 0.1, 0.25);
+	ambientColor = XMFLOAT3(0.1f, 0.1f, 0.25f);
 
 }
 

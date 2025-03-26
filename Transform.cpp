@@ -88,6 +88,8 @@ XMFLOAT4X4 Transform::GetWorldMatrix()
 	return worldMatrix; 
 }
 
+DirectX::XMFLOAT4X4 Transform::GetWorldInverseTranspose() { return worldInverseTranspose; }
+
 // Directional vectors getters
 XMFLOAT3 Transform::GetRight() { return rightward; }
 XMFLOAT3 Transform::GetUp() { return upward; }

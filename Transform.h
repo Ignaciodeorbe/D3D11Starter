@@ -58,6 +58,7 @@ public:
 	
 	// World matrix getters
 	DirectX::XMFLOAT4X4 GetWorldMatrix();
+	DirectX::XMFLOAT4X4 GetWorldInverseTranspose();
 
 	// Directional vector getters
 	DirectX::XMFLOAT3 GetRight();

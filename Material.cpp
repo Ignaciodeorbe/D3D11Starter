@@ -71,6 +71,7 @@ void Material::PrepareMaterial(std::shared_ptr<Camera> camera, std::shared_ptr<T
 	vertexShader->SetMatrix4x4("world", transform->GetWorldMatrix()); // match variable
 	vertexShader->SetMatrix4x4("view", camera->ViewMatrix()); // names in your
 	vertexShader->SetMatrix4x4("projection", camera->ProjectionMatrix()); // shader’s cbuffer!
+	vertexShader->SetMatrix4x4("worldInvTranspose", transform->GetWorldInverseTranspose());
 
 	pixelShader->SetFloat4("colorTint", tint);
 	pixelShader->SetFloat2("scale", scale);

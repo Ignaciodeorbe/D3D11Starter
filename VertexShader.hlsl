@@ -7,6 +7,7 @@ cbuffer ConstantBuffer : register(b0) // The slot that the buffer is binded too 
     float4x4 world; 
     float4x4 view;
     float4x4 projection;
+	float4x4 worldInvTranspose;
 }
 
 // --------------------------------------------------------
@@ -33,6 +34,9 @@ VertexToPixel main( VertexShaderInput input )
 	//   which we're leaving at 1.0 for now (this is more useful when dealing with 
 	//   a perspective projection matrix, which we'll get to in the future).
     output.screenPosition = mul(wvp, float4(input.localPosition, 1.0f));
+
+	output.normal = mul((float3x3)worldInvTranspose, input.normal);
+	output.worldPosition = mul(world, float4(input.localPosition, 1)).xyz;
 	
 	// Pass the color through 
 	// - The values will be interpolated per-pixel by the rasterizer
