@@ -95,6 +95,13 @@ void Game::Initialize()
 	// Set ambient color
 	ambientColor = XMFLOAT3(0.1f, 0.1f, 0.25f);
 
+	// Initialize lights
+	directionalLight = {};
+	directionalLight.Type = LIGHT_TYPE_DIRECTIONAL;
+	directionalLight.Direction = XMFLOAT3(1, -1, 0);
+	directionalLight.Color = XMFLOAT3(0.2f, 0.2f, 1.0f);
+	directionalLight.Intensity = 1.0f;
+
 }
 
 
@@ -377,7 +384,10 @@ void Game::Draw(float deltaTime, float totalTime)
 	for (int i = 0; i < entities.size(); i++)
 	{
 			entities[i].Draw(currentCamera, totalTime);
+
+			// Pass in values to the shader for lighting
 			entities[i].GetMaterial()->PixelShader()->SetFloat3("ambient", ambientColor);
+			entities[i].GetMaterial()->PixelShader()->SetData("directionalLight", &directionalLight, sizeof(Light));
 	}
 
 

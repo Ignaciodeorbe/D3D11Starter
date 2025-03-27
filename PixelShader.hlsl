@@ -11,6 +11,7 @@ cbuffer ConstantBuffer : register(b0)
 	float roughness;
 	float3 cameraPosition;
 	float3 ambient;
+	Light directionalLight;
 }
 
 Texture2D SurfaceTexture : register(t0);

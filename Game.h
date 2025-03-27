@@ -9,6 +9,7 @@
 #include <vector>
 #include <DirectXMath.h>
 #include "Camera.h"
+#include "Lights.h"
 
 
 
@@ -46,6 +47,8 @@ public:
 
 	// Track the current camera
 	std::shared_ptr<Camera> currentCamera;
+
+	Light directionalLight;
 
 	DirectX::XMFLOAT3 ambientColor;
 
