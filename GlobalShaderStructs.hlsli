@@ -67,7 +67,7 @@ struct Light
 // Lighting Methods
 //-----------------
 
-float Diffuse(Light light, float3 normal, float3 surfaceColor)
+float3 Diffuse(Light light, float3 normal, float3 surfaceColor)
 {
     // Normalize light direction
     float3 lightDirection = normalize(-light.Direction); // Light direction is negative because we need the direction to the light
@@ -80,11 +80,11 @@ float Diffuse(Light light, float3 normal, float3 surfaceColor)
 
 float Phong(Light light, float3 normal, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
 {
-    
-    if (roughness == 1.0f)
-    {
-        return 0.0f;
-    } 
+    // If roughness is 1 return 0 
+  // if (roughness == 1.0f)
+  // {
+  //     return 0.0f;
+  // } 
     
      // Normalize light direction
     float3 lightDirection = normalize(light.Direction);
@@ -92,8 +92,9 @@ float Phong(Light light, float3 normal, float3 cameraPosition, float3 pixelWorld
     float3 V = normalize(cameraPosition - pixelWorldPosition);
     float3 R = reflect(lightDirection, normal);
     
-    // Multiply by light color and intensity
+    // Calculate phong specular
     return pow(max(dot(V, R), 0), (1 - roughness) * MAX_SPECULAR_EXPONENT);
+    
 }
 
 
@@ -103,6 +104,7 @@ float Phong(Light light, float3 normal, float3 cameraPosition, float3 pixelWorld
 
 float3 ComputeDirectionalLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
 {
+    // Combine diffuse and phong specular to get the directional light
     float3 diffuse = Diffuse(light, normal, surfaceColor);
     float specular = Phong(light, normal, cameraPosition, pixelWorldPosition, roughness);
     return diffuse + specular;
