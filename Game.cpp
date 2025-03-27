@@ -98,8 +98,8 @@ void Game::Initialize()
 	// Initialize lights
 	directionalLight = {};
 	directionalLight.Type = LIGHT_TYPE_DIRECTIONAL;
-	directionalLight.Direction = XMFLOAT3(1, -1, 0);
-	directionalLight.Color = XMFLOAT3(0.2f, 0.2f, 1.0f);
+	directionalLight.Direction = XMFLOAT3(1, 0, 0);
+	directionalLight.Color = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	directionalLight.Intensity = 1.0f;
 
 }
