@@ -34,8 +34,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
 
-	// Compute diffuse
-	float4 diffuse = float4(Diffuse(directionalLight, input.normal, surfaceColor), 1.0f);
+	// Compute the lighting
+	float3 calculatedLighting = ComputeLighting(directionalLight, input.normal, surfaceColor, cameraPosition, input.worldPosition, roughness);
 
 
 	float4 ambientColor = float4(ambient, 1.0f);
@@ -46,5 +46,5 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
-	return surfaceColor * colorTint * ambientColor + diffuse;
+	return surfaceColor * colorTint * ambientColor + float4(calculatedLighting, 1.0f);
 }

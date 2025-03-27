@@ -33,7 +33,7 @@ public:
 		DirectX::XMFLOAT2 offset,
 		float distortionStrength = 1.0f,
 		float time = 0.0f,
-		float roughness = 1.0f);
+		float roughness = 0.5f);
 
 
 	//--------

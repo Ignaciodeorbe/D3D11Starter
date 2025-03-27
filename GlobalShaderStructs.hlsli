@@ -67,14 +67,81 @@ struct Light
 // Lighting Methods
 //-----------------
 
-float3 Diffuse(Light light, float3 normal, float3 surfaceColor)
+float Diffuse(Light light, float3 normal, float3 surfaceColor)
 {
     // Normalize light direction
-    float3 lightDirection = normalize(-light.Direction); // Light direction is negative because we need the direction to the ligh
+    float3 lightDirection = normalize(-light.Direction); // Light direction is negative because we need the direction to the light
     
     // Calculate lambertian reflectance with dot product
     float lambertianReflection = saturate(dot(normal, lightDirection));
     
-    return surfaceColor * light.Color * light.Intensity * lambertianReflection;
+    return surfaceColor * lambertianReflection;
+}
+
+float Phong(Light light, float3 normal, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+{
+    
+    if (roughness == 1.0f)
+    {
+        return 0.0f;
+    } 
+    
+     // Normalize light direction
+    float3 lightDirection = normalize(light.Direction);
+    
+    float3 V = normalize(cameraPosition - pixelWorldPosition);
+    float3 R = reflect(lightDirection, normal);
+    
+    // Multiply by light color and intensity
+    return pow(max(dot(V, R), 0), (1 - roughness) * MAX_SPECULAR_EXPONENT);
+}
+
+
+// ------------------
+// Light Type Methods
+// ------------------
+
+float3 ComputeDirectionalLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+{
+    float3 diffuse = Diffuse(light, normal, surfaceColor);
+    float specular = Phong(light, normal, cameraPosition, pixelWorldPosition, roughness);
+    return diffuse + specular;
+}
+
+//float3 ComputePointLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+//{
+//    
+//
+//    
+//}
+//
+//float3 ComputeSpotLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+//{
+//    
+//}
+
+
+// --------------------
+// Main Lighting Method
+// --------------------
+
+float3 ComputeLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+{
+    float3 result = 0.0f;
+
+    if (light.Type == LIGHT_TYPE_DIRECTIONAL)
+    {
+        result = ComputeDirectionalLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
+    }
+   // else if (light.Type == LIGHT_TYPE_POINT)
+   // {
+   //     result = ComputePointLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
+   // }
+   // else if (light.Type == LIGHT_TYPE_SPOT)
+   // {
+   //     result = ComputeSpotLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
+   // }
+
+    return result * light.Color * light.Intensity;
 }
 #endif
