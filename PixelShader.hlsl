@@ -34,11 +34,10 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// Adjusting scale and uv offset
 	input.uv = input.uv * scale + offset;
 
-	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
-	float4 ambientColor = float4(ambient, 1.0f);
+	float3 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
 
 	// The variable for all the lighting
-	float3 sceneLighting = surfaceColor * colorTint * ambientColor;
+	float3 sceneLighting = surfaceColor * colorTint * ambient;
 
 
 	for (int i = 0; i < lightsCount; i++)

@@ -67,10 +67,10 @@ struct Light
 // Lighting Methods
 //-----------------
 
-float3 Diffuse(Light light, float3 normal, float3 surfaceColor)
+float3 Diffuse(float3 lightDirection, float3 normal, float3 surfaceColor)
 {
     // Normalize light direction
-    float3 lightDirection = normalize(-light.Direction); // Light direction is negative because we need the direction to the light
+    lightDirection = normalize(lightDirection);
     
     // Calculate lambertian reflectance with dot product
     float lambertianReflection = saturate(dot(normal, lightDirection));
@@ -78,23 +78,22 @@ float3 Diffuse(Light light, float3 normal, float3 surfaceColor)
     return surfaceColor * lambertianReflection;
 }
 
-float Phong(Light light, float3 normal, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+float Phong(float3 lightDirection, float3 normal, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
 {
-    // If roughness is 1 return 0 
-  // if (roughness == 1.0f)
-  // {
-  //     return 0.0f;
-  // } 
     
-     // Normalize light direction
-    float3 lightDirection = normalize(light.Direction);
+    lightDirection = normalize(lightDirection);
     
     float3 V = normalize(cameraPosition - pixelWorldPosition);
-    float3 R = reflect(lightDirection, normal);
+    float3 R = reflect(-lightDirection, normal);
     
-    // Calculate phong specular
     return pow(max(dot(V, R), 0), (1 - roughness) * MAX_SPECULAR_EXPONENT);
-    
+}
+
+float Attenuation(Light light, float3 pixelWorldPosition)
+{
+    float dist = distance(light.Position, pixelWorldPosition);
+    float att = saturate(1.0f - (dist * dist / (light.Range * light.Range)));
+    return att * att;
 }
 
 
@@ -104,19 +103,31 @@ float Phong(Light light, float3 normal, float3 cameraPosition, float3 pixelWorld
 
 float3 ComputeDirectionalLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
 {
-    // Combine diffuse and phong specular to get the directional light
-    float3 diffuse = Diffuse(light, normal, surfaceColor);
-    float specular = Phong(light, normal, cameraPosition, pixelWorldPosition, roughness);
+    // Compute light direction 
+    float3 lightDirection = normalize(-light.Direction);
+
+    // Compute diffuse and specular 
+    float3 diffuse = Diffuse(lightDirection, normal, surfaceColor);
+    float specular = Phong(lightDirection, normal, cameraPosition, pixelWorldPosition, roughness);
     return diffuse + specular;
 }
 
-//float3 ComputePointLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
-//{
-//    
-//
-//    
-//}
-//
+float3 ComputePointLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+{
+    // Compute light direction 
+    float3 lightDirection = normalize(light.Position - pixelWorldPosition);
+
+    // Compute diffuse and specular
+    float3 diffuse = Diffuse(lightDirection, normal, surfaceColor);
+    float specular = Phong(lightDirection, normal, cameraPosition, pixelWorldPosition, roughness);
+    
+    // Apply attenuation 
+    float attenuation = Attenuation(light, pixelWorldPosition);
+    
+    return (diffuse + specular) * attenuation;
+
+}
+
 //float3 ComputeSpotLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
 //{
 //    
@@ -135,10 +146,10 @@ float3 ComputeLighting(Light light, float3 normal, float3 surfaceColor, float3 c
     {
         result = ComputeDirectionalLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
     }
-   // else if (light.Type == LIGHT_TYPE_POINT)
-   // {
-   //     result = ComputePointLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
-   // }
+    else if (light.Type == LIGHT_TYPE_POINT)
+    {
+        result = ComputePointLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
+    }
    // else if (light.Type == LIGHT_TYPE_SPOT)
    // {
    //     result = ComputeSpotLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
