@@ -143,6 +143,7 @@ float3 ComputeSpotLighting(Light light, float3 normal, float3 surfaceColor, floa
     float cosOuter = cos(light.SpotOuterAngle);
     float cosInner = cos(light.SpotInnerAngle);
     float falloffRange = cosOuter - cosInner;
+    
     // Linear falloff over the range, clamp 0-1, apply to light calc
     float spotTerm = saturate((cosOuter - pixelAngle) / falloffRange);
     

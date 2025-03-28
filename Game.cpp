@@ -730,5 +730,31 @@ void Game::CreateUI()
 
 		ImGui::Unindent(20.0f);
 	}
+
+	// Allows user to change aspects of lights
+	if (ImGui::CollapsingHeader("Lights"))
+	{
+		ImGui::Indent(20.0f); // Indent to make the data more organized
+
+		for (int i = 0; i < lights.size(); i++)
+		{
+			ImGui::PushID(i);
+
+			// Changes the color of the lights
+			ImGui::ColorEdit4("RGBA light color picker", &lights[i].Color.x);
+
+			// Change spot lights and point lights position
+			if(lights[i].Type == LIGHT_TYPE_POINT || lights[i].Type == LIGHT_TYPE_SPOT)
+				ImGui::DragFloat3("Position", &lights[i].Position.x, 0.01f);
+
+			// Change spot lights rotation (direction)
+			if (lights[i].Type == LIGHT_TYPE_SPOT)
+				ImGui::DragFloat3("Rotation", &lights[i].Direction.x, 0.01f);
+
+
+			ImGui::PopID();
+
+		}
+	}
 	ImGui::End();
 }
