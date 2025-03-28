@@ -114,12 +114,12 @@ float3 ComputeDirectionalLighting(Light light, float3 normal, float3 surfaceColo
 
 float3 ComputePointLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
 {
-    // Compute light direction 
-    float3 lightDirection = normalize(light.Position - pixelWorldPosition);
+    // Compute light direction to pixel
+    float3 lightDirectionToPixel = normalize(light.Position - pixelWorldPosition);
 
     // Compute diffuse and specular
-    float3 diffuse = Diffuse(lightDirection, normal, surfaceColor);
-    float specular = Phong(lightDirection, normal, cameraPosition, pixelWorldPosition, roughness);
+    float3 diffuse = Diffuse(lightDirectionToPixel, normal, surfaceColor);
+    float specular = Phong(lightDirectionToPixel, normal, cameraPosition, pixelWorldPosition, roughness);
     
     // Apply attenuation 
     float attenuation = Attenuation(light, pixelWorldPosition);
@@ -128,10 +128,26 @@ float3 ComputePointLighting(Light light, float3 normal, float3 surfaceColor, flo
 
 }
 
-//float3 ComputeSpotLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
-//{
-//    
-//}
+float3 ComputeSpotLighting(Light light, float3 normal, float3 surfaceColor, float3 cameraPosition, float3 pixelWorldPosition, float roughness)
+{
+    // Compute light direction 
+    float3 lightDirection = normalize(-light.Direction);
+    
+    // Compute light direction to pixel
+    float3 lightDirectionToPixel = normalize(light.Position - pixelWorldPosition);
+    
+    // Get cos(angle) between pixel and light direction
+    float pixelAngle = saturate(dot(lightDirectionToPixel, lightDirection));
+    
+    // Get cosines of angles and calculate range
+    float cosOuter = cos(light.SpotOuterAngle);
+    float cosInner = cos(light.SpotInnerAngle);
+    float falloffRange = cosOuter - cosInner;
+    // Linear falloff over the range, clamp 0-1, apply to light calc
+    float spotTerm = saturate((cosOuter - pixelAngle) / falloffRange);
+    
+    return ComputePointLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness) * spotTerm;
+}
 
 
 // --------------------
@@ -142,6 +158,7 @@ float3 ComputeLighting(Light light, float3 normal, float3 surfaceColor, float3 c
 {
     float3 result = 0.0f;
 
+    // Compute the lighting for whatever type of light it is
     if (light.Type == LIGHT_TYPE_DIRECTIONAL)
     {
         result = ComputeDirectionalLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
@@ -150,10 +167,10 @@ float3 ComputeLighting(Light light, float3 normal, float3 surfaceColor, float3 c
     {
         result = ComputePointLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
     }
-   // else if (light.Type == LIGHT_TYPE_SPOT)
-   // {
-   //     result = ComputeSpotLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
-   // }
+    else if (light.Type == LIGHT_TYPE_SPOT)
+    {
+        result = ComputeSpotLighting(light, normal, surfaceColor, cameraPosition, pixelWorldPosition, roughness);
+    }
 
     return result * light.Color * light.Intensity;
 }

@@ -320,7 +320,6 @@ void Game::CreateGeometry()
 	directionalLight2.Direction = XMFLOAT3(0, 0, 1); 
 	lights.push_back(directionalLight2);
 
-
 	Light pointLight1 = {};
 	pointLight1.Color = XMFLOAT3(0, 1, 0);
 	pointLight1.Type = LIGHT_TYPE_POINT;
@@ -328,6 +327,28 @@ void Game::CreateGeometry()
 	pointLight1.Position = XMFLOAT3(5, 5, 0); 
 	pointLight1.Range = 10.0f;
 	lights.push_back(pointLight1);
+
+	Light spotLight1 = {};
+	spotLight1.Color = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	spotLight1.Type = LIGHT_TYPE_SPOT;
+	spotLight1.Intensity = 1.0f;
+	spotLight1.Direction = XMFLOAT3(0, -1, 0);
+	spotLight1.Position = XMFLOAT3(-6, 5, 0);
+	spotLight1.Range = 10.0f;
+	spotLight1.SpotInnerAngle = XMConvertToRadians(20.0f);
+	spotLight1.SpotOuterAngle = XMConvertToRadians(40.0f);
+	lights.push_back(spotLight1);
+
+	Light spotLight2 = {};
+	spotLight2.Color = XMFLOAT3(1, 1, 1);
+	spotLight2.Type = LIGHT_TYPE_SPOT;
+	spotLight2.Intensity = 1.0f;
+	spotLight2.Direction = XMFLOAT3(0, -1, 0);
+	spotLight2.Position = XMFLOAT3(-9, 7, 0);
+	spotLight2.Range = 10.0f;
+	spotLight2.SpotInnerAngle = XMConvertToRadians(1.0f);
+	spotLight2.SpotOuterAngle = XMConvertToRadians(10.0f);
+	lights.push_back(spotLight2);
 
 
 }

@@ -3,7 +3,7 @@
 
 cbuffer ConstantBuffer : register(b0)
 {
-	Light lights[5];
+	Light lights[6];
 	int lightsCount;
 	float4 colorTint;
 	float2 scale;
