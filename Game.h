@@ -48,8 +48,7 @@ public:
 	// Track the current camera
 	std::shared_ptr<Camera> currentCamera;
 
-	Light directionalLight;
-
+	std::vector<Light> lights;
 	DirectX::XMFLOAT3 ambientColor;
 
 

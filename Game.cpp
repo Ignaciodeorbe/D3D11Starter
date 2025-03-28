@@ -95,12 +95,6 @@ void Game::Initialize()
 	// Set ambient color
 	ambientColor = XMFLOAT3(0.1f, 0.1f, 0.25f);
 
-	// Initialize lights
-	directionalLight = {};
-	directionalLight.Type = LIGHT_TYPE_DIRECTIONAL;
-	directionalLight.Direction = XMFLOAT3(1, 0, 0);
-	directionalLight.Color = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	directionalLight.Intensity = 1.0f;
 
 }
 
@@ -306,6 +300,35 @@ void Game::CreateGeometry()
 		entities[i].GetTransform()->SetPosition(XMFLOAT3((3.0f * (i % numberOfShapesForRow)) - 9.0f, (5.0f - (verticalOffset * 3)) , 0.0f));
 
 	}
+
+
+	//------------------
+	// Initialize lights
+	//------------------
+
+	Light directionalLight1 = {};
+	directionalLight1.Color = XMFLOAT3(1, 0, 0);
+	directionalLight1.Type = LIGHT_TYPE_DIRECTIONAL;
+	directionalLight1.Intensity = 0.7f;
+	directionalLight1.Direction = XMFLOAT3(1, 0, 0); 
+	lights.push_back(directionalLight1);
+
+	Light directionalLight2 = {};
+	directionalLight2.Color = XMFLOAT3(0, 1, 0);
+	directionalLight2.Type = LIGHT_TYPE_DIRECTIONAL;
+	directionalLight2.Intensity = 0.7f;
+	directionalLight2.Direction = XMFLOAT3(0, -1, 0); 
+	lights.push_back(directionalLight2);
+
+
+	Light directionalLight3 = {};
+	directionalLight3.Color = XMFLOAT3(0, 0, 1);
+	directionalLight3.Type = LIGHT_TYPE_DIRECTIONAL;
+	directionalLight3.Intensity = 0.7f;
+	directionalLight3.Direction = XMFLOAT3(-1, 0, 0); 
+	lights.push_back(directionalLight3);
+
+
 }
 
 
@@ -387,7 +410,13 @@ void Game::Draw(float deltaTime, float totalTime)
 
 			// Pass in values to the shader for lighting
 			entities[i].GetMaterial()->PixelShader()->SetFloat3("ambient", ambientColor);
-			entities[i].GetMaterial()->PixelShader()->SetData("directionalLight", &directionalLight, sizeof(Light));
+			entities[i].GetMaterial()->PixelShader()->SetInt("lightsCount", (int)lights.size());
+
+			// Add the lights to the pixel shader
+			entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());
+
+
+			
 	}
 
 

@@ -3,15 +3,17 @@
 
 cbuffer ConstantBuffer : register(b0)
 {
+	Light lights[5];
+	int lightsCount;
 	float4 colorTint;
 	float2 scale;
 	float2 offset;
-	float distortionStrength;
-	float time;
-	float roughness;
 	float3 cameraPosition;
+	float time;
 	float3 ambient;
-	Light directionalLight;
+	float distortionStrength;
+	float roughness;
+
 }
 
 Texture2D SurfaceTexture : register(t0);
@@ -33,12 +35,20 @@ float4 main(VertexToPixel input) : SV_TARGET
 	input.uv = input.uv * scale + offset;
 
 	float4 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
-
-	// Compute the lighting
-	float3 calculatedLighting = ComputeLighting(directionalLight, input.normal, surfaceColor, cameraPosition, input.worldPosition, roughness);
-
-
 	float4 ambientColor = float4(ambient, 1.0f);
+
+	// The variable for all the lighting
+	float3 sceneLighting = surfaceColor * colorTint * ambientColor;
+
+
+	for (int i = 0; i < lightsCount; i++)
+	{
+		// Compute the lighting
+		sceneLighting += ComputeLighting(lights[i], input.normal, surfaceColor, cameraPosition, input.worldPosition, roughness);
+
+	}
+
+
 
 	input.normal = normalize(input.normal);
 
@@ -46,5 +56,5 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
-	return surfaceColor * colorTint * ambientColor + float4(calculatedLighting, 1.0f);
+	return float4(sceneLighting, 1.0f);
 }
