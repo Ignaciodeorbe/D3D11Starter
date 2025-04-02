@@ -21,6 +21,9 @@ private:
 	// Helper method to create buffers from vertex and index data
 	void CreateBuffers(Vertex* vertices, int vertexCount, unsigned int* indices, int indexCount);
 
+	// Calculates the tangents of the vertices in a mesh
+	void CalculateTangents(Vertex* verts, int numVerts, unsigned int* indices, int numIndices);
+	
 public:
 
 	// Constructor
