@@ -66,6 +66,25 @@ struct Light
 };
 
 
+//-----------------------
+// Normal Mapping Methods
+//-----------------------
+
+float3 ComputeNormalMap(float3 normal, float3 tangent, Texture2D normalMap, SamplerState samplerState, float2 uv)
+{
+    float3 unpackedNormal = normalMap.Sample(samplerState, uv).rgb * 2 - 1;
+    unpackedNormal = normalize(unpackedNormal);
+    
+    float3 N = normalize(normal); // Must be normalized here or before
+    float3 T = normalize(tangent); // Must be normalized here or before
+    T = normalize(T - N * dot(T, N)); // Gram-Schmidt assumes T&N are normalized!
+    float3 B = cross(T, N);
+    float3x3 TBN = float3x3(T, B, N);
+    
+    return mul(unpackedNormal, TBN); // Note multiplication order!
+}
+
+
 //-----------------
 // Lighting Methods
 //-----------------

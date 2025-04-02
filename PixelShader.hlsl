@@ -18,6 +18,9 @@ cbuffer ConstantBuffer : register(b0)
 
 Texture2D SurfaceTexture : register(t0);
 
+Texture2D NormalMap : register(t1);
+
+
 SamplerState BasicSampler : register(s0);
 
 // --------------------------------------------------------
@@ -35,6 +38,10 @@ float4 main(VertexToPixel input) : SV_TARGET
 	input.uv = input.uv * scale + offset;
 
 	float3 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
+
+	
+	ComputeNormalMap(input.normal, input.tangent, NormalMap, BasicSampler, input.uv);
+
 
 	// The variable for all the lighting
 	float3 sceneLighting = surfaceColor * colorTint * ambient;
