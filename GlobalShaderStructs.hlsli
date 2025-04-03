@@ -41,6 +41,12 @@ struct VertexToPixel
 
 };
 
+struct VertexToPixel_Sky
+{
+    float4 position : SV_POSITION;
+    float3 sampleDir : DIRECTION;
+};
+
 
 //----------------
 // Lighting Struct
