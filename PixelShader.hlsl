@@ -37,14 +37,15 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// Adjusting scale and uv offset
 	input.uv = input.uv * scale + offset;
 
-	float3 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv);
+	float3 surfaceColor = SurfaceTexture.Sample(BasicSampler, input.uv).rgb;
 
+	input.normal = normalize(input.normal);
 	
-	ComputeNormalMap(input.normal, input.tangent, NormalMap, BasicSampler, input.uv);
+	input.normal = ComputeNormalMap(input.normal, input.tangent, NormalMap, BasicSampler, input.uv);
 
 
 	// The variable for all the lighting
-	float3 sceneLighting = surfaceColor * colorTint * ambient;
+	float3 sceneLighting = surfaceColor * colorTint.rgb * ambient.rgb;
 
 
 	for (int i = 0; i < lightsCount; i++)
@@ -56,7 +57,6 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 
 
-	input.normal = normalize(input.normal);
 
 	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 

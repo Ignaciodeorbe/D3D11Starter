@@ -180,6 +180,24 @@ void Game::CreateGeometry()
 		nullptr,
 		energySRV.GetAddressOf());
 
+	// Load cobblestone texture 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cobblestoneSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/cobblestone.png").c_str(),
+		nullptr,
+		cobblestoneSRV.GetAddressOf());
+
+	// Load cobblestone normal texture 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> cobblestoneNormalsSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/cobblestone_normals.png").c_str(),
+		nullptr,
+		cobblestoneNormalsSRV.GetAddressOf());
+
 
 	//-----------------
 	// Making Materials
@@ -233,10 +251,19 @@ void Game::CreateGeometry()
 	fireMaterial->AddTextureSRV("EnergySurfaceTexture", energySRV);
 
 
+	std::shared_ptr<Material> cobblestoneMaterial = std::make_shared<Material>(
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	cobblestoneMaterial->AddSampler("BasicSampler", samplerState);
+	cobblestoneMaterial->AddTextureSRV("SurfaceTexture", cobblestoneSRV);
+	cobblestoneMaterial->AddTextureSRV("NormalMap", cobblestoneNormalsSRV);
+
+
+
 	// Adding materials to a list
 	materials.push_back(lavaRockMaterial);
 	materials.push_back(sandMaterial);
 	materials.push_back(fireMaterial);
+	materials.push_back(cobblestoneMaterial);
 
 
 	//-----------------------
@@ -265,13 +292,13 @@ void Game::CreateGeometry()
 	int numberOfShapesForRow = (int)entities.size();
 	
 	// Add meshes to entitty list with UV material
-	entities.push_back(Entity(cube, basicMaterial));
-	entities.push_back(Entity(cylinder, basicMaterial));
-	entities.push_back(Entity(helix, basicMaterial));
-	entities.push_back(Entity(sphere, basicMaterial));
-	entities.push_back(Entity(torus, basicMaterial));
-	entities.push_back(Entity(quad, basicMaterial));
-	entities.push_back(Entity(quadDoubleSided, basicMaterial));
+	entities.push_back(Entity(cube, cobblestoneMaterial));
+	entities.push_back(Entity(cylinder, cobblestoneMaterial));
+	entities.push_back(Entity(helix, cobblestoneMaterial));
+	entities.push_back(Entity(sphere, cobblestoneMaterial));
+	entities.push_back(Entity(torus, cobblestoneMaterial));
+	entities.push_back(Entity(quad, cobblestoneMaterial));
+	entities.push_back(Entity(quadDoubleSided, cobblestoneMaterial));
 
 	// Add meshes to entitty list with custom material
 	entities.push_back(Entity(cube, fireMaterial));
