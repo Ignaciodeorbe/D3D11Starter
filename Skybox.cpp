@@ -6,7 +6,13 @@
 using namespace DirectX;
 
 
-Skybox::Skybox(std::shared_ptr<Mesh> mesh, Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler, const wchar_t* cubeMapFiles[6])
+Skybox::Skybox(std::shared_ptr<Mesh> mesh, Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler, 
+	const wchar_t* right,
+	const wchar_t* left,
+	const wchar_t* up,
+	const wchar_t* down,
+	const wchar_t* front,
+	const wchar_t* back)
 	: skyboxMesh(mesh), sampler(sampler)
 {
 	// Instantiate pixel and vertex shader
@@ -16,21 +22,18 @@ Skybox::Skybox(std::shared_ptr<Mesh> mesh, Microsoft::WRL::ComPtr<ID3D11SamplerS
 		Graphics::Device, Graphics::Context, FixPath(L"SkyVertexShader.cso").c_str());
 
 	// Initialize the rasterizer state and set it to solid and front culling
-	D3D11_RASTERIZER_DESC rasterizer = {};
-	rasterizer.FillMode = D3D11_FILL_SOLID;
-	rasterizer.CullMode = D3D11_CULL_FRONT;
-	Graphics::Device->CreateRasterizerState(&rasterizer, rasterizerState.GetAddressOf());
+	D3D11_RASTERIZER_DESC rasterizerDesc = {};
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+	Graphics::Device->CreateRasterizerState(&rasterizerDesc, rasterizerState.GetAddressOf());
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	Graphics::Device->CreateDepthStencilState(&depthStencilDesc, depthStencilState.GetAddressOf());
 
-
-
-	//-------------- RIGHT ------------- LEFT --------- UP ------------- DOWN ------------- FRONT -------- BACK --------
-	//				   V				   V			V                  V                  V              V
-	CreateCubemap(cubeMapFiles[0], cubeMapFiles[1], cubeMapFiles[2], cubeMapFiles[3], cubeMapFiles[4], cubeMapFiles[5]);
+		
+	skyboxSRV = CreateCubemap(right, left, up, down, front, back);
 }
 
 // Destructor
@@ -54,6 +57,9 @@ void Skybox::Draw(std::shared_ptr<Camera> camera)
 
 	skyboxPixelShader->SetShaderResourceView("SkyboxTexture", skyboxSRV);
 	skyboxPixelShader->SetSamplerState("BasicSampler", sampler);
+
+	skyboxMesh->Draw();
+
 
 	Graphics::Context->RSSetState(0);
 	Graphics::Context->OMSetDepthStencilState(0, 0);

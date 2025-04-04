@@ -377,7 +377,16 @@ void Game::CreateGeometry()
 	spotLight2.SpotOuterAngle = XMConvertToRadians(10.0f);
 	lights.push_back(spotLight2);
 
+	//------------------
+	// Initialize Skybox
+	//------------------
 
+	skybox = std::make_shared<Skybox>(cube, samplerState, FixPath(L"../../Assets/Textures/right.png").c_str(),
+		FixPath(L"../../Assets/Textures/left.png").c_str(),
+		FixPath(L"../../Assets/Textures/up.png").c_str(),
+		FixPath(L"../../Assets/Textures/down.png").c_str(),
+		FixPath(L"../../Assets/Textures/front.png").c_str(),
+		FixPath(L"../../Assets/Textures/back.png").c_str());
 }
 
 
@@ -467,6 +476,9 @@ void Game::Draw(float deltaTime, float totalTime)
 
 			
 	}
+
+	skybox->Draw(currentCamera);
+
 
 
 

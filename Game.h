@@ -10,6 +10,8 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 #include "Lights.h"
+#include "Skybox.h"
+
 
 
 
@@ -71,6 +73,10 @@ private:
 	// Camera shared pointer
 	std::vector<std::shared_ptr<Camera>> cameras;
 	std::vector<std::shared_ptr<Material>> materials;
+
+	// Sky box pointer
+	std::shared_ptr<Skybox> skybox;
+
 
 	Microsoft::WRL::ComPtr<ID3D11SamplerState > samplerState;
 };
