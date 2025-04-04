@@ -15,13 +15,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
 
-	std::shared_ptr<Mesh> skybox;
+	std::shared_ptr<Mesh> skyboxMesh;
 	std::shared_ptr<SimplePixelShader> skyboxPixelShader;
-	std::shared_ptr<SimpleVertexShader> skyboxPixelShader;
+	std::shared_ptr<SimpleVertexShader> skyboxVertexShader;
 
 
 public:
 
+	Skybox(std::shared_ptr<Mesh> mesh, Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler, const wchar_t* cubeMapFiles[6]);
 
 	//--------
 	// Getters
@@ -38,4 +39,13 @@ public:
 	//--------
 	// Methods
 	//--------
+
+	// Helper for creating a cubemap from 6 individual textures
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> CreateCubemap(
+		const wchar_t* right,
+		const wchar_t* left,
+		const wchar_t* up,
+		const wchar_t* down,
+		const wchar_t* front,
+		const wchar_t* back);
 };
