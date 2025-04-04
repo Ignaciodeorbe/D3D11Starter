@@ -5,6 +5,8 @@
 #include <d3d11.h>
 #include "SimpleShader.h"
 #include "Mesh.h"
+#include "camera.h"
+
 
 class Skybox
 {
@@ -24,21 +26,13 @@ public:
 
 	Skybox(std::shared_ptr<Mesh> mesh, Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler, const wchar_t* cubeMapFiles[6]);
 
-	//--------
-	// Getters
-	//--------
-	
-
-
-	//--------
-	// Setters
-	//--------
-
-
+	~Skybox();
 
 	//--------
 	// Methods
 	//--------
+
+	void Draw(std::shared_ptr<Camera> camera);
 
 	// Helper for creating a cubemap from 6 individual textures
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> CreateCubemap(

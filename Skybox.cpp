@@ -33,8 +33,31 @@ Skybox::Skybox(std::shared_ptr<Mesh> mesh, Microsoft::WRL::ComPtr<ID3D11SamplerS
 	CreateCubemap(cubeMapFiles[0], cubeMapFiles[1], cubeMapFiles[2], cubeMapFiles[3], cubeMapFiles[4], cubeMapFiles[5]);
 }
 
+// Destructor
 Skybox::~Skybox()
 {
+}
+
+
+void Skybox::Draw(std::shared_ptr<Camera> camera)
+{
+	Graphics::Context->RSSetState(rasterizerState.Get());
+	Graphics::Context->OMSetDepthStencilState(depthStencilState.Get(), 0);
+
+	// Set pixel and vertex shader
+	skyboxPixelShader->SetShader();
+	skyboxVertexShader->SetShader();
+
+	skyboxVertexShader->SetMatrix4x4("view", camera->ViewMatrix());
+	skyboxVertexShader->SetMatrix4x4("projection", camera->ProjectionMatrix());
+	skyboxVertexShader->CopyAllBufferData();
+
+	skyboxPixelShader->SetShaderResourceView("SkyboxTexture", skyboxSRV);
+	skyboxPixelShader->SetSamplerState("BasicSampler", sampler);
+
+	Graphics::Context->RSSetState(0);
+	Graphics::Context->OMSetDepthStencilState(0, 0);
+
 }
 
 // --------------------------------------------------------
