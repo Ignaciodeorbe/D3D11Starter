@@ -51,6 +51,7 @@ void Skybox::Draw(std::shared_ptr<Camera> camera)
 	skyboxPixelShader->SetShader();
 	skyboxVertexShader->SetShader();
 
+	// Set view and projection matrix
 	skyboxVertexShader->SetMatrix4x4("view", camera->ViewMatrix());
 	skyboxVertexShader->SetMatrix4x4("projection", camera->ProjectionMatrix());
 	skyboxVertexShader->CopyAllBufferData();
@@ -58,6 +59,7 @@ void Skybox::Draw(std::shared_ptr<Camera> camera)
 	skyboxPixelShader->SetShaderResourceView("SkyboxTexture", skyboxSRV);
 	skyboxPixelShader->SetSamplerState("BasicSampler", sampler);
 
+	// Draw Skybox
 	skyboxMesh->Draw();
 
 
