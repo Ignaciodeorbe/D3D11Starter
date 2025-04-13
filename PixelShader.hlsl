@@ -56,7 +56,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 
 	// The variable for all the lighting
-	float3 sceneLighting = surfaceColor * colorTint.rgb * ambient.rgb;
+	float3 sceneLighting = surfaceColor * colorTint.rgb;
 
 
 	for (int i = 0; i < lightsCount; i++)

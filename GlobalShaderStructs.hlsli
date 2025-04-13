@@ -161,7 +161,10 @@ float3 ComputePointLighting(Light light, float3 normal, float3 surfaceColor, flo
     // Apply attenuation 
     float attenuation = Attenuation(light, pixelWorldPosition);
     
-    return (diffuse + specular) * attenuation;
+    // Calculate diffuse with energy conservation, including cutting diffuse for metals
+    float3 balancedDiff = DiffuseEnergyConserve(diffuse, specular, metalness);
+    
+    return (balancedDiff + specular) * attenuation;
 
 }
 

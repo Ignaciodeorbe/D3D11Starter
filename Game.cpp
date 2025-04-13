@@ -334,7 +334,7 @@ void Game::CreateGeometry()
 	//------------------
 
 	Light directionalLight1 = {};
-	directionalLight1.Color = XMFLOAT3(1, 0, 0);
+	directionalLight1.Color = XMFLOAT3(1, 1, 1);
 	directionalLight1.Type = LIGHT_TYPE_DIRECTIONAL;
 	directionalLight1.Intensity = 0.7f;
 	directionalLight1.Direction = XMFLOAT3(1, 0, 0); 
@@ -345,7 +345,7 @@ void Game::CreateGeometry()
 	directionalLight2.Type = LIGHT_TYPE_DIRECTIONAL;
 	directionalLight2.Intensity = 0.7f;
 	directionalLight2.Direction = XMFLOAT3(0, 0, 1); 
-	lights.push_back(directionalLight2);
+	//lights.push_back(directionalLight2);
 
 	Light pointLight1 = {};
 	pointLight1.Color = XMFLOAT3(0, 1, 0);
@@ -353,7 +353,7 @@ void Game::CreateGeometry()
 	pointLight1.Intensity = 1.0f;
 	pointLight1.Position = XMFLOAT3(5, 5, 0); 
 	pointLight1.Range = 10.0f;
-	lights.push_back(pointLight1);
+	//lights.push_back(pointLight1);
 
 	Light spotLight1 = {};
 	spotLight1.Color = XMFLOAT3(0.5f, 0.5f, 0.5f);
@@ -364,7 +364,7 @@ void Game::CreateGeometry()
 	spotLight1.Range = 10.0f;
 	spotLight1.SpotInnerAngle = XMConvertToRadians(20.0f);
 	spotLight1.SpotOuterAngle = XMConvertToRadians(40.0f);
-	lights.push_back(spotLight1);
+	//lights.push_back(spotLight1);
 
 	Light spotLight2 = {};
 	spotLight2.Color = XMFLOAT3(1, 1, 1);
@@ -375,7 +375,7 @@ void Game::CreateGeometry()
 	spotLight2.Range = 10.0f;
 	spotLight2.SpotInnerAngle = XMConvertToRadians(1.0f);
 	spotLight2.SpotOuterAngle = XMConvertToRadians(10.0f);
-	lights.push_back(spotLight2);
+	//lights.push_back(spotLight2);
 
 	//------------------
 	// Initialize Skybox
