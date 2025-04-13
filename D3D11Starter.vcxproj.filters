@@ -187,5 +187,8 @@
     <None Include="GlobalShaderStructs.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="PBRFunctions.hlsli">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -254,7 +254,7 @@ void Game::CreateGeometry()
 	std::shared_ptr<Material> cobblestoneMaterial = std::make_shared<Material>(
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
 	cobblestoneMaterial->AddSampler("BasicSampler", samplerState);
-	cobblestoneMaterial->AddTextureSRV("SurfaceTexture", cobblestoneSRV);
+	cobblestoneMaterial->AddTextureSRV("Albedo", cobblestoneSRV);
 	cobblestoneMaterial->AddTextureSRV("NormalMap", cobblestoneNormalsSRV);
 
 

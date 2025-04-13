@@ -16,10 +16,13 @@ cbuffer ConstantBuffer : register(b0)
 
 }
 
-Texture2D SurfaceTexture : register(t0);
+Texture2D Albedo : register(t0);
 
 Texture2D NormalMap : register(t1);
 
+Texture2D RoughnessMap : register(t2);
+
+Texture2D MetalnessMap : register(t3);
 
 SamplerState BasicSampler : register(s0);
 
@@ -37,7 +40,15 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// Adjusting scale and uv offset
 	input.uv = input.uv * scale + offset;
 
-	float3 surfaceColor = pow(SurfaceTexture.Sample(BasicSampler, input.uv).rgb, 2.2f);
+	// Sampling from textures
+	float3 surfaceColor = pow(Albedo.Sample(BasicSampler, input.uv).rgb, 2.2f);
+	float roughness = RoughnessMap.Sample(BasicSampler, input.uv).r;
+	float metalness = MetalnessMap.Sample(BasicSampler, input.uv).r;
+
+	// Assume albedo texture is actually holding specular color where metalness == 1
+	// Note the use of lerp here - metal is generally 0 or 1, but might be in between
+	// because of linear texture sampling, so we lerp the specular color to match
+	float3 specularColor = lerp(F0_NON_METAL, surfaceColor.rgb, metalness);
 
 	input.normal = normalize(input.normal);
 	
@@ -51,7 +62,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 	for (int i = 0; i < lightsCount; i++)
 	{
 		// Compute the lighting
-		sceneLighting += ComputeLighting(lights[i], input.normal, surfaceColor, cameraPosition, input.worldPosition, roughness);
+		sceneLighting += ComputeLighting(lights[i], input.normal, surfaceColor, cameraPosition, input.worldPosition, roughness, specularColor, metalness);
 
 	}
 
