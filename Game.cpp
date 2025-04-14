@@ -198,6 +198,109 @@ void Game::CreateGeometry()
 		nullptr,
 		cobblestoneNormalsSRV.GetAddressOf());
 
+	// Load 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/floor_albedo.png").c_str(),
+		nullptr,
+		floorSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorNormalsSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/floor_normals.png").c_str(),
+		nullptr,
+		floorNormalsSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorRoughnessSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/floor_roughness.png").c_str(),
+		nullptr,
+		floorRoughnessSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorMetalSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/floor_metal.png").c_str(),
+		nullptr,
+		floorMetalSRV.GetAddressOf());
+
+
+	// Load 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/bronze_albedo.png").c_str(),
+		nullptr,
+		bronzeSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeNormalsSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/bronze_normals.png").c_str(),
+		nullptr,
+		bronzeNormalsSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeRoughnessSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/bronze_roughness.png").c_str(),
+		nullptr,
+		bronzeRoughnessSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeMetalSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/bronze_metal.png").c_str(),
+		nullptr,
+		bronzeMetalSRV.GetAddressOf());
+
+
+
+	// Load 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/scratched_albedo.png").c_str(),
+		nullptr,
+		scratchedSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedNormalsSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/scratched_normals.png").c_str(),
+		nullptr,
+		scratchedNormalsSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedRoughnessSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/scratched_roughness.png").c_str(),
+		nullptr,
+		scratchedRoughnessSRV.GetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedMetalSRV;
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(L"../../Assets/Textures/PBR/scratched_metal.png").c_str(),
+		nullptr,
+		scratchedMetalSRV.GetAddressOf());
+
+
 
 	//-----------------
 	// Making Materials
@@ -257,6 +360,30 @@ void Game::CreateGeometry()
 	cobblestoneMaterial->AddTextureSRV("Albedo", cobblestoneSRV);
 	cobblestoneMaterial->AddTextureSRV("NormalMap", cobblestoneNormalsSRV);
 
+	std::shared_ptr<Material> floorMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	floorMaterial->AddSampler("BasicSampler", samplerState);
+	floorMaterial->AddTextureSRV("Albedo", floorSRV);
+	floorMaterial->AddTextureSRV("NormalMap", floorNormalsSRV);
+	floorMaterial->AddTextureSRV("RoughnessMap", floorRoughnessSRV);
+	floorMaterial->AddTextureSRV("MetalnessMap", floorMetalSRV);
+
+	std::shared_ptr<Material> bronzeMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	bronzeMaterial->AddSampler("BasicSampler", samplerState);
+	bronzeMaterial->AddTextureSRV("Albedo", bronzeSRV);
+	bronzeMaterial->AddTextureSRV("NormalMap", bronzeNormalsSRV);
+	bronzeMaterial->AddTextureSRV("RoughnessMap", bronzeRoughnessSRV);
+	bronzeMaterial->AddTextureSRV("MetalnessMap", bronzeMetalSRV);
+
+	std::shared_ptr<Material> scractchedMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	scractchedMaterial->AddSampler("BasicSampler", samplerState);
+	scractchedMaterial->AddTextureSRV("Albedo", scratchedSRV);
+	scractchedMaterial->AddTextureSRV("NormalMap", scratchedNormalsSRV);
+	scractchedMaterial->AddTextureSRV("RoughnessMap", scratchedRoughnessSRV);
+	scractchedMaterial->AddTextureSRV("MetalnessMap", scratchedMetalSRV);
+
 
 
 	// Adding materials to a list
@@ -264,6 +391,9 @@ void Game::CreateGeometry()
 	materials.push_back(sandMaterial);
 	materials.push_back(fireMaterial);
 	materials.push_back(cobblestoneMaterial);
+	materials.push_back(floorMaterial);
+	materials.push_back(bronzeMaterial);
+
 
 
 	//-----------------------
@@ -280,34 +410,34 @@ void Game::CreateGeometry()
 
 
 	// Add meshes to entitty list with normal material
-	entities.push_back(Entity(cube, normalMaterial));
-	entities.push_back(Entity(cylinder, normalMaterial));
-	entities.push_back(Entity(helix, normalMaterial));
-	entities.push_back(Entity(sphere, normalMaterial));
-	entities.push_back(Entity(torus, normalMaterial));
-	entities.push_back(Entity(quad, normalMaterial));
-	entities.push_back(Entity(quadDoubleSided, normalMaterial));
+	entities.push_back(Entity(cube, bronzeMaterial));
+	entities.push_back(Entity(cylinder, bronzeMaterial));
+	entities.push_back(Entity(helix, bronzeMaterial));
+	entities.push_back(Entity(sphere, bronzeMaterial));
+	entities.push_back(Entity(torus, bronzeMaterial));
+	entities.push_back(Entity(quad, bronzeMaterial));
+	entities.push_back(Entity(quadDoubleSided, bronzeMaterial));
 	
 	// Number of shapes in each row, used for spacing out shapes without hard coding values
 	int numberOfShapesForRow = (int)entities.size();
 	
 	// Add meshes to entitty list with UV material
-	entities.push_back(Entity(cube, cobblestoneMaterial));
-	entities.push_back(Entity(cylinder, cobblestoneMaterial));
-	entities.push_back(Entity(helix, cobblestoneMaterial));
-	entities.push_back(Entity(sphere, cobblestoneMaterial));
-	entities.push_back(Entity(torus, cobblestoneMaterial));
-	entities.push_back(Entity(quad, cobblestoneMaterial));
-	entities.push_back(Entity(quadDoubleSided, cobblestoneMaterial));
+	entities.push_back(Entity(cube, floorMaterial));
+	entities.push_back(Entity(cylinder, floorMaterial));
+	entities.push_back(Entity(helix, floorMaterial));
+	entities.push_back(Entity(sphere, floorMaterial));
+	entities.push_back(Entity(torus, floorMaterial));
+	entities.push_back(Entity(quad, floorMaterial));
+	entities.push_back(Entity(quadDoubleSided, floorMaterial));
 
 	// Add meshes to entitty list with custom material
-	entities.push_back(Entity(cube, fireMaterial));
-	entities.push_back(Entity(cylinder, sandMaterial));
-	entities.push_back(Entity(helix, lavaRockMaterial));
-	entities.push_back(Entity(sphere, fireMaterial));
-	entities.push_back(Entity(torus, customMaterial));
-	entities.push_back(Entity(quad, sandMaterial));
-	entities.push_back(Entity(quadDoubleSided, customMaterial));
+	entities.push_back(Entity(cube, scractchedMaterial));
+	entities.push_back(Entity(cylinder, scractchedMaterial));
+	entities.push_back(Entity(helix, scractchedMaterial));
+	entities.push_back(Entity(sphere, scractchedMaterial));
+	entities.push_back(Entity(torus, scractchedMaterial));
+	entities.push_back(Entity(quad, scractchedMaterial));
+	entities.push_back(Entity(quadDoubleSided, scractchedMaterial));
 
 	// Number of shapes in each row, used for spacing out shapes without hard coding values
 	//int numberOfShapesForRow = (int)entities.size();
