@@ -454,13 +454,13 @@ void Game::CreateGeometry()
 	entities.push_back(Entity(quadDoubleSided, floorMaterial));
 
 	// Add meshes to entitty list with custom material
-	entities.push_back(Entity(cube, scractchedMaterial));
-	entities.push_back(Entity(cylinder, scractchedMaterial));
-	entities.push_back(Entity(helix, scractchedMaterial));
-	entities.push_back(Entity(sphere, scractchedMaterial));
-	entities.push_back(Entity(torus, scractchedMaterial));
-	entities.push_back(Entity(quad, scractchedMaterial));
-	entities.push_back(Entity(quadDoubleSided, scractchedMaterial));
+	entities.push_back(Entity(cube, fireMaterial));
+	entities.push_back(Entity(cylinder, sandMaterial));
+	entities.push_back(Entity(helix, sandMaterial));
+	entities.push_back(Entity(sphere, fireMaterial));
+	entities.push_back(Entity(torus, customMaterial));
+	entities.push_back(Entity(quad, customMaterial));
+	entities.push_back(Entity(quadDoubleSided, customMaterial));
 
 	// Number of shapes in each row, used for spacing out shapes without hard coding values
 	//int numberOfShapesForRow = (int)entities.size();
