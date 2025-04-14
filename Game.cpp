@@ -198,107 +198,125 @@ void Game::CreateGeometry()
 		nullptr,
 		cobblestoneNormalsSRV.GetAddressOf());
 
-	// Load 
+
+	// Load metal floor PBR textures 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/floor_albedo.png").c_str(),
-		nullptr,
-		floorSRV.GetAddressOf());
+	std::wstring floorAlbedoFilePath = L"../../Assets/Textures/PBR/floor_albedo.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorNormalsSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/floor_normals.png").c_str(),
-		nullptr,
-		floorNormalsSRV.GetAddressOf());
+	std::wstring floorNormalFilePath = L"../../Assets/Textures/PBR/floor_normals.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorRoughnessSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/floor_roughness.png").c_str(),
-		nullptr,
-		floorRoughnessSRV.GetAddressOf());
+	std::wstring floorRoughnessFilePath = L"../../Assets/Textures/PBR/floor_roughness.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> floorMetalSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/floor_metal.png").c_str(),
-		nullptr,
-		floorMetalSRV.GetAddressOf());
+	std::wstring floorMetalFilePath = L"../../Assets/Textures/PBR/floor_metal.png";
+
+	LoadPBRTexturesFromFile(
+		floorSRV, floorAlbedoFilePath, 
+		floorNormalsSRV, floorNormalFilePath, 
+		floorRoughnessSRV, floorRoughnessFilePath, 
+		floorMetalSRV, floorMetalFilePath);
 
 
-	// Load 
+	// Load bronze PBR textures
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/bronze_albedo.png").c_str(),
-		nullptr,
-		bronzeSRV.GetAddressOf());
+	std::wstring bronzeAlbedoFilePath = L"../../Assets/Textures/PBR/bronze_albedo.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeNormalsSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/bronze_normals.png").c_str(),
-		nullptr,
-		bronzeNormalsSRV.GetAddressOf());
+	std::wstring bronzeNormalFilePath = L"../../Assets/Textures/PBR/bronze_normals.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeRoughnessSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/bronze_roughness.png").c_str(),
-		nullptr,
-		bronzeRoughnessSRV.GetAddressOf());
+	std::wstring bronzeRoughnessFilePath = L"../../Assets/Textures/PBR/bronze_roughness.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> bronzeMetalSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/bronze_metal.png").c_str(),
-		nullptr,
-		bronzeMetalSRV.GetAddressOf());
+	std::wstring bronzeMetalFilePath = L"../../Assets/Textures/PBR/bronze_metal.png";
+
+	LoadPBRTexturesFromFile(
+		bronzeSRV, bronzeAlbedoFilePath,
+		bronzeNormalsSRV, bronzeNormalFilePath,
+		bronzeRoughnessSRV, bronzeRoughnessFilePath,
+		bronzeMetalSRV, bronzeMetalFilePath);
 
 
-
-	// Load 
+	// Load scratched metal PBR textures
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/scratched_albedo.png").c_str(),
-		nullptr,
-		scratchedSRV.GetAddressOf());
+	std::wstring scratchedAlbedoFilePath = L"../../Assets/Textures/PBR/scratched_albedo.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedNormalsSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/scratched_normals.png").c_str(),
-		nullptr,
-		scratchedNormalsSRV.GetAddressOf());
+	std::wstring scratchedNormalFilePath = L"../../Assets/Textures/PBR/scratched_normals.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedRoughnessSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/scratched_roughness.png").c_str(),
-		nullptr,
-		scratchedRoughnessSRV.GetAddressOf());
+	std::wstring scratchedRoughnessFilePath = L"../../Assets/Textures/PBR/scratched_roughness.png";
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> scratchedMetalSRV;
-	CreateWICTextureFromFile(
-		Graphics::Device.Get(),
-		Graphics::Context.Get(),
-		FixPath(L"../../Assets/Textures/PBR/scratched_metal.png").c_str(),
-		nullptr,
-		scratchedMetalSRV.GetAddressOf());
+	std::wstring scratchedMetalFilePath = L"../../Assets/Textures/PBR/scratched_metal.png";
+
+	LoadPBRTexturesFromFile(
+		scratchedSRV, scratchedAlbedoFilePath,
+		scratchedNormalsSRV, scratchedNormalFilePath,
+		scratchedRoughnessSRV, scratchedRoughnessFilePath,
+		scratchedMetalSRV, scratchedMetalFilePath);
+
+
+	// Load paint PBR textures
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> paintSRV;
+	std::wstring paintAlbedoFilePath = L"../../Assets/Textures/PBR/paint_albedo.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> paintNormalsSRV;
+	std::wstring paintNormalFilePath = L"../../Assets/Textures/PBR/paint_normals.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> paintRoughnessSRV;
+	std::wstring paintRoughnessFilePath = L"../../Assets/Textures/PBR/paint_roughness.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> paintMetalSRV;
+	std::wstring paintMetalFilePath = L"../../Assets/Textures/PBR/paint_metal.png";
+
+	LoadPBRTexturesFromFile(
+		paintSRV, paintAlbedoFilePath,
+		paintNormalsSRV, paintNormalFilePath,
+		paintRoughnessSRV, paintRoughnessFilePath,
+		paintMetalSRV, paintMetalFilePath);
+
+
+	// Load rough PBR textures
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> roughSRV;
+	std::wstring roughAlbedoFilePath = L"../../Assets/Textures/PBR/rough_albedo.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> roughNormalsSRV;
+	std::wstring roughNormalFilePath = L"../../Assets/Textures/PBR/rough_normals.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> roughRoughnessSRV;
+	std::wstring roughRoughnessFilePath = L"../../Assets/Textures/PBR/rough_roughness.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> roughMetalSRV;
+	std::wstring roughMetalFilePath = L"../../Assets/Textures/PBR/rough_metal.png";
+
+	LoadPBRTexturesFromFile(
+		roughSRV, roughAlbedoFilePath,
+		roughNormalsSRV, roughNormalFilePath,
+		roughRoughnessSRV, roughRoughnessFilePath,
+		roughMetalSRV, roughMetalFilePath);
+
+
+	// Load wood PBR textures
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> woodSRV;
+	std::wstring woodAlbedoFilePath = L"../../Assets/Textures/PBR/wood_albedo.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> woodNormalsSRV;
+	std::wstring woodNormalFilePath = L"../../Assets/Textures/PBR/wood_normals.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> woodRoughnessSRV;
+	std::wstring woodRoughnessFilePath = L"../../Assets/Textures/PBR/wood_roughness.png";
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> woodMetalSRV;
+	std::wstring woodMetalFilePath = L"../../Assets/Textures/PBR/wood_metal.png";
+
+	LoadPBRTexturesFromFile(
+		woodSRV, woodAlbedoFilePath,
+		woodNormalsSRV, woodNormalFilePath,
+		woodRoughnessSRV, woodRoughnessFilePath,
+		woodMetalSRV, woodMetalFilePath);
 
 
 
@@ -360,30 +378,30 @@ void Game::CreateGeometry()
 	cobblestoneMaterial->AddTextureSRV("Albedo", cobblestoneSRV);
 	cobblestoneMaterial->AddTextureSRV("NormalMap", cobblestoneNormalsSRV);
 
+	// PBR materials
 	std::shared_ptr<Material> floorMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
-	floorMaterial->AddSampler("BasicSampler", samplerState);
-	floorMaterial->AddTextureSRV("Albedo", floorSRV);
-	floorMaterial->AddTextureSRV("NormalMap", floorNormalsSRV);
-	floorMaterial->AddTextureSRV("RoughnessMap", floorRoughnessSRV);
-	floorMaterial->AddTextureSRV("MetalnessMap", floorMetalSRV);
+	PBR_SRV_TextureInitialize(floorMaterial, floorSRV, floorNormalsSRV, floorRoughnessSRV, floorMetalSRV);
 
 	std::shared_ptr<Material> bronzeMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
-	bronzeMaterial->AddSampler("BasicSampler", samplerState);
-	bronzeMaterial->AddTextureSRV("Albedo", bronzeSRV);
-	bronzeMaterial->AddTextureSRV("NormalMap", bronzeNormalsSRV);
-	bronzeMaterial->AddTextureSRV("RoughnessMap", bronzeRoughnessSRV);
-	bronzeMaterial->AddTextureSRV("MetalnessMap", bronzeMetalSRV);
+	PBR_SRV_TextureInitialize(bronzeMaterial, bronzeSRV, bronzeNormalsSRV, bronzeRoughnessSRV, bronzeMetalSRV);
 
 	std::shared_ptr<Material> scractchedMaterial = std::make_shared<Material>(
 		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
-	scractchedMaterial->AddSampler("BasicSampler", samplerState);
-	scractchedMaterial->AddTextureSRV("Albedo", scratchedSRV);
-	scractchedMaterial->AddTextureSRV("NormalMap", scratchedNormalsSRV);
-	scractchedMaterial->AddTextureSRV("RoughnessMap", scratchedRoughnessSRV);
-	scractchedMaterial->AddTextureSRV("MetalnessMap", scratchedMetalSRV);
+	PBR_SRV_TextureInitialize(scractchedMaterial, scratchedSRV, scratchedNormalsSRV, scratchedRoughnessSRV, scratchedMetalSRV);
 
+	std::shared_ptr<Material> paintMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	PBR_SRV_TextureInitialize(paintMaterial, paintSRV, paintNormalsSRV, paintRoughnessSRV, paintMetalSRV);
+
+	std::shared_ptr<Material> roughMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	PBR_SRV_TextureInitialize(roughMaterial, roughSRV, roughNormalsSRV, roughRoughnessSRV, roughMetalSRV);
+
+	std::shared_ptr<Material> woodMaterial = std::make_shared<Material>(
+		XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), vs, ps, XMFLOAT2(1, 1), XMFLOAT2(0, 0), 0.05f, 0.0f);
+	PBR_SRV_TextureInitialize(woodMaterial, woodSRV, woodNormalsSRV, woodRoughnessSRV, woodMetalSRV);
 
 
 	// Adding materials to a list
@@ -393,6 +411,11 @@ void Game::CreateGeometry()
 	materials.push_back(cobblestoneMaterial);
 	materials.push_back(floorMaterial);
 	materials.push_back(bronzeMaterial);
+	materials.push_back(scractchedMaterial);
+	materials.push_back(paintMaterial);
+	materials.push_back(roughMaterial);
+	materials.push_back(woodMaterial);
+
 
 
 
@@ -410,13 +433,13 @@ void Game::CreateGeometry()
 
 
 	// Add meshes to entitty list with normal material
-	entities.push_back(Entity(cube, bronzeMaterial));
-	entities.push_back(Entity(cylinder, bronzeMaterial));
-	entities.push_back(Entity(helix, bronzeMaterial));
+	entities.push_back(Entity(sphere, floorMaterial));
 	entities.push_back(Entity(sphere, bronzeMaterial));
-	entities.push_back(Entity(torus, bronzeMaterial));
-	entities.push_back(Entity(quad, bronzeMaterial));
-	entities.push_back(Entity(quadDoubleSided, bronzeMaterial));
+	entities.push_back(Entity(sphere, scractchedMaterial));
+	entities.push_back(Entity(sphere, paintMaterial));
+	entities.push_back(Entity(sphere, roughMaterial));
+	entities.push_back(Entity(sphere, woodMaterial));
+	entities.push_back(Entity(sphere, bronzeMaterial));
 	
 	// Number of shapes in each row, used for spacing out shapes without hard coding values
 	int numberOfShapesForRow = (int)entities.size();
@@ -636,6 +659,57 @@ void Game::Draw(float deltaTime, float totalTime)
 //---------------
 // Helper Methods
 //---------------
+
+// Loads PBR textures from their files
+void Game::LoadPBRTexturesFromFile(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& albedoSRV, std::wstring& albedoRelativeFilePath, 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& normalMapSRV, std::wstring& normalRelativeFilePath, 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& roughnessMapSRV, std::wstring& roughnessRelativeFilePath, 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& metalnessMapSRV, std::wstring& metalnessRelativeFilePath)
+{
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(albedoRelativeFilePath).c_str(),
+		nullptr,
+		albedoSRV.GetAddressOf());
+
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(normalRelativeFilePath).c_str(),
+		nullptr,
+		normalMapSRV.GetAddressOf());
+
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(roughnessRelativeFilePath).c_str(),
+		nullptr,
+		roughnessMapSRV.GetAddressOf());
+
+	CreateWICTextureFromFile(
+		Graphics::Device.Get(),
+		Graphics::Context.Get(),
+		FixPath(metalnessRelativeFilePath).c_str(),
+		nullptr,
+		metalnessMapSRV.GetAddressOf());
+	
+}
+
+// Helper method to set the PBR texture resources
+void Game::PBR_SRV_TextureInitialize(std::shared_ptr<Material> material, 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> albedoSRV,
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> normalMapSRV, 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> roughnessMapSRV, 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> metalnessMapSRV)
+{
+
+	material->AddSampler("BasicSampler", samplerState);
+	material->AddTextureSRV("Albedo", albedoSRV);
+	material->AddTextureSRV("NormalMap", normalMapSRV);
+	material->AddTextureSRV("RoughnessMap", roughnessMapSRV);
+	material->AddTextureSRV("MetalnessMap", metalnessMapSRV);
+}
 
 // This refreshs the UI every frame
 void Game::RefreshUI(float deltaTime)

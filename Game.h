@@ -30,7 +30,17 @@ public:
 	void Draw(float deltaTime, float totalTime);
 	void OnResize();
 
-	// Helper methods added by me (Ignacio de Orbe)
+	// Helper methods added
+	void LoadPBRTexturesFromFile(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& albedoSRV, std::wstring& albedoRelativeFilePath,
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& normalMapSRV, std::wstring& normalRelativeFilePath,
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& roughnessMapSRV, std::wstring& roughnessRelativeFilePath,
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& metalnessMapSRV, std::wstring& metalnessRelativeFilePath);
+
+	void PBR_SRV_TextureInitialize(std::shared_ptr<Material> material, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> 
+		albedoSRV, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> normalMapSRV,
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> roughnessMapSRV,
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> metalnessMapSRV);
+
 	void RefreshUI(float deltaTime);
 	void CreateUI();
 
