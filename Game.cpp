@@ -755,17 +755,19 @@ void Game::Draw(float deltaTime, float totalTime)
 	// Draw Geometry
 	for (int i = 0; i < entities.size(); i++)
 	{
-			entities[i].Draw(currentCamera, totalTime);
+		// Setting shadowmap vertex shader data
+		std::shared_ptr<SimpleVertexShader> vs = entities[i].GetMaterial()->VertexShader();
+		vs->SetMatrix4x4("lightView", lightViewMatrix);
+		vs->SetMatrix4x4("lightProjection", lightProjectionMatrix);
 
-			// Pass in values to the shader for lighting
-			entities[i].GetMaterial()->PixelShader()->SetFloat3("ambient", ambientColor);
-			entities[i].GetMaterial()->PixelShader()->SetInt("lightsCount", (int)lights.size());
+		entities[i].Draw(currentCamera, totalTime);
 
-			// Add the lights to the pixel shader
-			entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());
+		// Pass in values to the shader for lighting
+		entities[i].GetMaterial()->PixelShader()->SetFloat3("ambient", ambientColor);
+		entities[i].GetMaterial()->PixelShader()->SetInt("lightsCount", (int)lights.size());
 
-
-			
+		// Add the lights to the pixel shader
+		entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());		
 	}
 
 	skybox->Draw(currentCamera);

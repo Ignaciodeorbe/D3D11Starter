@@ -8,6 +8,8 @@ cbuffer ConstantBuffer : register(b0) // The slot that the buffer is binded too 
     float4x4 view;
     float4x4 projection;
 	float4x4 worldInvTranspose;
+	matrix lightView;
+	matrix lightProjection;
 }
 
 // --------------------------------------------------------
@@ -39,12 +41,17 @@ VertexToPixel main( VertexShaderInput input )
 	output.tangent = mul((float3x3)world, input.tangent);
 
 	output.worldPosition = mul(world, float4(input.localPosition, 1)).xyz;
+
 	
 	// Pass the color through 
 	// - The values will be interpolated per-pixel by the rasterizer
 	// - We don't need to alter it here, but we do need to send it to the pixel shader
 	output.uv = input.uv;
 	output.normal = input.normal;
+
+	// World, view, projection matrix calculation for shadow maps
+	matrix shadowWVP = mul(lightProjection, mul(lightView, world));
+	output.shadowMapPos = mul(shadowWVP, float4(input.localPosition, 1.0f));
 
 	// Whatever we return will make its way through the pipeline to the
 	// next programmable stage we're using (the pixel shader for now)
