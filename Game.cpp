@@ -432,54 +432,72 @@ void Game::CreateGeometry()
 	std::shared_ptr<Mesh> quadDoubleSided = std::make_shared<Mesh>(FixPath("../../Assets/Models/quad_double_sided.obj").c_str());
 
 
-	// Add meshes to entitty list with normal material
-	entities.push_back(Entity(sphere, floorMaterial));
-	entities.push_back(Entity(sphere, bronzeMaterial));
-	entities.push_back(Entity(sphere, scractchedMaterial));
-	entities.push_back(Entity(sphere, paintMaterial));
-	entities.push_back(Entity(sphere, roughMaterial));
-	entities.push_back(Entity(sphere, woodMaterial));
-	entities.push_back(Entity(sphere, bronzeMaterial));
-	
-	// Number of shapes in each row, used for spacing out shapes without hard coding values
-	int numberOfShapesForRow = (int)entities.size();
-	
-	// Add meshes to entitty list with UV material
-	entities.push_back(Entity(cube, floorMaterial));
-	entities.push_back(Entity(cylinder, floorMaterial));
-	entities.push_back(Entity(helix, floorMaterial));
-	entities.push_back(Entity(sphere, floorMaterial));
-	entities.push_back(Entity(torus, floorMaterial));
-	entities.push_back(Entity(quad, floorMaterial));
-	entities.push_back(Entity(quadDoubleSided, floorMaterial));
-
-	// Add meshes to entitty list with custom material
-	entities.push_back(Entity(cube, fireMaterial));
-	entities.push_back(Entity(cylinder, sandMaterial));
-	entities.push_back(Entity(helix, sandMaterial));
-	entities.push_back(Entity(sphere, fireMaterial));
-	entities.push_back(Entity(torus, customMaterial));
-	entities.push_back(Entity(quad, customMaterial));
-	entities.push_back(Entity(quadDoubleSided, customMaterial));
-
-	// Number of shapes in each row, used for spacing out shapes without hard coding values
+	//// Add meshes to entitty list with normal material
+	//entities.push_back(Entity(sphere, floorMaterial));
+	//entities.push_back(Entity(sphere, bronzeMaterial));
+	//entities.push_back(Entity(sphere, scractchedMaterial));
+	//entities.push_back(Entity(sphere, paintMaterial));
+	//entities.push_back(Entity(sphere, roughMaterial));
+	//entities.push_back(Entity(sphere, woodMaterial));
+	//entities.push_back(Entity(sphere, bronzeMaterial));
+	//
+	//// Number of shapes in each row, used for spacing out shapes without hard coding values
 	//int numberOfShapesForRow = (int)entities.size();
+	//
+	//// Add meshes to entitty list with UV material
+	//entities.push_back(Entity(cube, floorMaterial));
+	//entities.push_back(Entity(cylinder, floorMaterial));
+	//entities.push_back(Entity(helix, floorMaterial));
+	//entities.push_back(Entity(sphere, floorMaterial));
+	//entities.push_back(Entity(torus, floorMaterial));
+	//entities.push_back(Entity(quad, floorMaterial));
+	//entities.push_back(Entity(quadDoubleSided, floorMaterial));
+	//
+	//// Add meshes to entitty list with custom material
+	//entities.push_back(Entity(cube, fireMaterial));
+	//entities.push_back(Entity(cylinder, sandMaterial));
+	//entities.push_back(Entity(helix, sandMaterial));
+	//entities.push_back(Entity(sphere, fireMaterial));
+	//entities.push_back(Entity(torus, customMaterial));
+	//entities.push_back(Entity(quad, customMaterial));
+	//entities.push_back(Entity(quadDoubleSided, customMaterial));
+	//
+	//// Number of shapes in each row, used for spacing out shapes without hard coding values
+	////int numberOfShapesForRow = (int)entities.size();
+	//
+	//// Offset to make rows
+	//float verticalOffset = -1.0f;
+	//
+	//// Spacing out the entities
+	//for (int i = 0; i < entities.size(); i++)
+	//{
+	//	// Makes a new row once each shape has been displayed
+	//	if (i % numberOfShapesForRow == 0)
+	//	{
+	//		verticalOffset++;
+	//	}
+	//
+	//	entities[i].GetTransform()->SetPosition(XMFLOAT3((3.0f * (i % numberOfShapesForRow)) - 9.0f, (5.0f - (verticalOffset * 3)) , 0.0f));
+	//
+	//}
 
-	// Offset to make rows
-	float verticalOffset = -1.0f;
 
-	// Spacing out the entities
-	for (int i = 0; i < entities.size(); i++)
-	{
-		// Makes a new row once each shape has been displayed
-		if (i % numberOfShapesForRow == 0)
-		{
-			verticalOffset++;
-		}
+	//------------------------------
+	// Meshs for shadow mapping test
+	//------------------------------
+	entities.push_back(Entity(cube, woodMaterial));
+	entities.push_back(Entity(torus, floorMaterial));
+	entities.push_back(Entity(sphere, paintMaterial));
+	entities.push_back(Entity(helix, roughMaterial));
 
-		entities[i].GetTransform()->SetPosition(XMFLOAT3((3.0f * (i % numberOfShapesForRow)) - 9.0f, (5.0f - (verticalOffset * 3)) , 0.0f));
+	entities[0].GetTransform()->SetScale(XMFLOAT3(20.0f, 0.01f, 20.0f));
+	entities[1].GetTransform()->SetPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
+	entities[2].GetTransform()->SetPosition(XMFLOAT3(-3.0f, 2.0f, 0.0f));
+	entities[3].GetTransform()->SetPosition(XMFLOAT3(3.0f, 2.0f, 0.0f));
 
-	}
+
+
+
 
 
 	//------------------
@@ -490,7 +508,7 @@ void Game::CreateGeometry()
 	directionalLight1.Color = XMFLOAT3(1, 1, 1);
 	directionalLight1.Type = LIGHT_TYPE_DIRECTIONAL;
 	directionalLight1.Intensity = 0.7f;
-	directionalLight1.Direction = XMFLOAT3(1, 0, 0); 
+	directionalLight1.Direction = XMFLOAT3(0, -1, 1); 
 	lights.push_back(directionalLight1);
 
 	Light directionalLight2 = {};
@@ -591,6 +609,20 @@ void Game::Update(float deltaTime, float totalTime)
 	//	// Appling the updated global scale
 	//	entities[i].GetTransform()->SetScale(scl);
 	//}
+
+
+	// Move meshes for shadow mapping test
+	entities[1].GetTransform()->SetRotation(XMFLOAT3(totalTime, totalTime, 0.0f));
+
+	float move = (float)(sin(totalTime) * 10.0f);
+
+	entities[2].GetTransform()->SetPosition(XMFLOAT3(-3.0f, 2.0f, move));
+
+	entities[3].GetTransform()->SetPosition(XMFLOAT3(3.0f, move / 5.0f + 3.0f, 0.0f));
+
+
+
+
 
 	// Example input checking: Quit if the escape key is pressed
 	if (Input::KeyDown(VK_ESCAPE))
