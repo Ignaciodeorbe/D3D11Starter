@@ -337,6 +337,8 @@ void Game::CreateGeometry()
 		Graphics::Device, Graphics::Context, FixPath(L"TexturePS.cso").c_str());
 	std::shared_ptr<SimplePixelShader> energyPixelShader = std::make_shared<SimplePixelShader>(
 		Graphics::Device, Graphics::Context, FixPath(L"EnergyPS.cso").c_str());
+	shadowVS = std::make_shared<SimpleVertexShader>(
+		Graphics::Device, Graphics::Context, FixPath(L"ShadowMapVertexShader.cso").c_str());
 
 	// Creating materials with different tints
 	std::shared_ptr<Material> basicMaterial = std::make_shared<Material>(
@@ -552,7 +554,6 @@ void Game::CreateGeometry()
 	// Creating Shadow Map Texture
 	//----------------------------
 
-	int shadowMapResolution = 1024; // Ideally a power of 2
 
 	// Create the actual texture that will be the shadow map
 	D3D11_TEXTURE2D_DESC shadowDesc = {};
@@ -593,7 +594,7 @@ void Game::CreateGeometry()
 		shadowSRV.GetAddressOf());
 
 
-	XMVECTOR lightDirection = XMVECTOR(directionalLight1.Direction.x, directionalLight1.Direction.y, directionalLight1.Direction.z);
+	XMVECTOR lightDirection = XMVectorSet(directionalLight1.Direction.x, directionalLight1.Direction.y, directionalLight1.Direction.z, 0);
 
 	XMMATRIX lightView = XMMatrixLookToLH(
 		-lightDirection * 20, // Position: "Backing up" 20 units from origin
@@ -708,7 +709,47 @@ void Game::Draw(float deltaTime, float totalTime)
 		//float color[4] = bgColor[];
 		Graphics::Context->ClearRenderTargetView(Graphics::BackBufferRTV.Get(),	bgColor);
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+		// Clear shadow map
+		Graphics::Context->ClearDepthStencilView(shadowDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
+
+	// Set up shadow map output merger
+	ID3D11RenderTargetView* nullRTV{};
+	Graphics::Context->OMSetRenderTargets(1, &nullRTV, shadowDSV.Get());
+
+	// Deactivate pixel shader
+	Graphics::Context->PSSetShader(0, 0, 0);
+
+	// Change viewport size to match the shadowmaps resolution
+	D3D11_VIEWPORT viewport = {};
+	viewport.Width = (float)shadowMapResolution;
+	viewport.Height = (float)shadowMapResolution;
+	viewport.MaxDepth = 1.0f;
+	Graphics::Context->RSSetViewports(1, &viewport);
+
+	shadowVS->SetShader();
+	shadowVS->SetMatrix4x4("view", lightViewMatrix);
+	shadowVS->SetMatrix4x4("projection", lightProjectionMatrix);
+
+	// Loop and draw all entities
+	for (int i = 0; i < entities.size(); i++)
+	{
+		shadowVS->SetMatrix4x4("world", entities[i].GetTransform()->GetWorldMatrix());
+		shadowVS->CopyAllBufferData();
+
+		// Draw the mesh directly to avoid the entity's material
+		entities[i].GetMesh()->Draw();
+	}
+
+	// Change pipeline settings back so that the screen can be rendered
+	viewport.Width = (float)Window::Width();
+	viewport.Height = (float)Window::Height();
+	Graphics::Context->RSSetViewports(1, &viewport);
+	Graphics::Context->OMSetRenderTargets(
+		1,
+		Graphics::BackBufferRTV.GetAddressOf(),
+		Graphics::DepthBufferDSV.Get());
 
 
 	// Draw Geometry
@@ -1095,6 +1136,12 @@ void Game::CreateUI()
 			ImGui::PopID();
 
 		}
+	}
+
+	// Allows user to shadow map
+	if (ImGui::CollapsingHeader("Shadow Map"))
+	{
+		ImGui::Image((ImTextureID)shadowSRV.Get(), ImVec2(512, 512));
 	}
 	ImGui::End();
 }

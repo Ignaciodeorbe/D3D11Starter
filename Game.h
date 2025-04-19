@@ -97,5 +97,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> shadowSampler;
 	DirectX::XMFLOAT4X4 lightViewMatrix;
 	DirectX::XMFLOAT4X4 lightProjectionMatrix;
+	std::shared_ptr<SimpleVertexShader> shadowVS;
+	int shadowMapResolution = 1024; // Ideally a power of 2
+
 };
 
