@@ -24,7 +24,11 @@ Texture2D RoughnessMap : register(t2);
 
 Texture2D MetalnessMap : register(t3);
 
+Texture2D ShadowMap : register(t4);
+
 SamplerState BasicSampler : register(s0);
+
+SamplerComparisonState ShadowSampler : register(s1);
 
 // --------------------------------------------------------
 // The entry point (main method) for our pixel shader
@@ -55,18 +59,53 @@ float4 main(VertexToPixel input) : SV_TARGET
 	input.normal = ComputeNormalMap(input.normal, input.tangent, NormalMap, BasicSampler, input.uv);
 
 
+	// Perform the perspective divide (divide by W) ourselves
+	input.shadowMapPos /= input.shadowMapPos.w;
+
+	// Convert the normalized device coordinates to UVs for sampling
+	float2 shadowUV = input.shadowMapPos.xy * 0.5f + 0.5f;
+	shadowUV.y = 1 - shadowUV.y; // Flip the Y
+
+	// Grab the distances we need: light-to-pixel and closest-surface
+	float distToLight = input.shadowMapPos.z;
+
+	// Get a ratio of comparison results using SampleCmpLevelZero()
+	float shadowAmount = ShadowMap.SampleCmpLevelZero(
+		ShadowSampler,
+		shadowUV,
+		distToLight).r;
+
+
 	// The variable for all the lighting
 	float3 sceneLighting = surfaceColor * colorTint.rgb;
+
+	float3 totalLight = float3(0, 0, 0);
 
 
 	for (int i = 0; i < lightsCount; i++)
 	{
-		// Compute the lighting
-		sceneLighting += ComputeLighting(lights[i], input.normal, surfaceColor, cameraPosition, input.worldPosition, roughness, specularColor, metalness);
+		float3 lightResult = ComputeLighting(
+			lights[i],
+			input.normal,
+			surfaceColor,
+			cameraPosition,
+			input.worldPosition,
+			roughness,
+			specularColor,
+			metalness
+		);
+
+		// Apply shadow amount only to the first light (typically directional)
+		if (i == 0)
+		{
+			lightResult *= shadowAmount;
+		}
+
+		totalLight += lightResult;
 
 	}
 
-
+	sceneLighting += totalLight;
 
 
 	// Just return the input color

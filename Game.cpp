@@ -594,6 +594,28 @@ void Game::CreateGeometry()
 		shadowSRV.GetAddressOf());
 
 
+	// Create rasterizer state for depth biasing
+	D3D11_RASTERIZER_DESC shadowRastDesc = {};
+	shadowRastDesc.FillMode = D3D11_FILL_SOLID;
+	shadowRastDesc.CullMode = D3D11_CULL_BACK;
+	shadowRastDesc.DepthClipEnable = true;
+	shadowRastDesc.DepthBias = 1000; // Min. precision units, not world units!
+	shadowRastDesc.SlopeScaledDepthBias = 1.0f; // Bias more based on slope
+	Graphics::Device->CreateRasterizerState(&shadowRastDesc, &shadowRasterizer);
+
+
+	D3D11_SAMPLER_DESC shadowSampDesc = {};
+	shadowSampDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+	shadowSampDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+	shadowSampDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	shadowSampDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	shadowSampDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	shadowSampDesc.BorderColor[0] = 1.0f; // Only need the first component
+	Graphics::Device->CreateSamplerState(&shadowSampDesc, &shadowSampler);
+
+
+
+
 	XMVECTOR lightDirection = XMVectorSet(directionalLight1.Direction.x, directionalLight1.Direction.y, directionalLight1.Direction.z, 0);
 
 	XMMATRIX lightView = XMMatrixLookToLH(
@@ -601,7 +623,7 @@ void Game::CreateGeometry()
 		lightDirection, // Direction: light's direction
 		XMVectorSet(0, 1, 0, 0)); // Up: World up vector (Y axis)
 
-	float lightProjectionSize = 25.0f; 
+	float lightProjectionSize = 15.0f; 
 	XMMATRIX lightProjection = XMMatrixOrthographicLH(
 		lightProjectionSize,
 		lightProjectionSize,
@@ -710,13 +732,17 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::Context->ClearRenderTargetView(Graphics::BackBufferRTV.Get(),	bgColor);
 		Graphics::Context->ClearDepthStencilView(Graphics::DepthBufferDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-		// Clear shadow map
-		Graphics::Context->ClearDepthStencilView(shadowDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
+
+	// Clear shadow map
+	Graphics::Context->ClearDepthStencilView(shadowDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	// Set up shadow map output merger
 	ID3D11RenderTargetView* nullRTV{};
 	Graphics::Context->OMSetRenderTargets(1, &nullRTV, shadowDSV.Get());
+
+	// Enable shadow rasterizer state
+	Graphics::Context->RSSetState(shadowRasterizer.Get());
 
 	// Deactivate pixel shader
 	Graphics::Context->PSSetShader(0, 0, 0);
@@ -751,28 +777,36 @@ void Game::Draw(float deltaTime, float totalTime)
 		Graphics::BackBufferRTV.GetAddressOf(),
 		Graphics::DepthBufferDSV.Get());
 
+	Graphics::Context->RSSetState(0);
+
 
 	// Draw Geometry
 	for (int i = 0; i < entities.size(); i++)
 	{
 		// Setting shadowmap vertex shader data
-		std::shared_ptr<SimpleVertexShader> vs = entities[i].GetMaterial()->VertexShader();
-		vs->SetMatrix4x4("lightView", lightViewMatrix);
-		vs->SetMatrix4x4("lightProjection", lightProjectionMatrix);
+		entities[i].GetMaterial()->VertexShader()->SetMatrix4x4("lightView", lightViewMatrix);
+		entities[i].GetMaterial()->VertexShader()->SetMatrix4x4("lightProjection", lightProjectionMatrix);
 
-		entities[i].Draw(currentCamera, totalTime);
 
 		// Pass in values to the shader for lighting
 		entities[i].GetMaterial()->PixelShader()->SetFloat3("ambient", ambientColor);
 		entities[i].GetMaterial()->PixelShader()->SetInt("lightsCount", (int)lights.size());
 
+		entities[i].GetMaterial()->PixelShader()->SetShaderResourceView("ShadowMap", shadowSRV);
+		entities[i].GetMaterial()->PixelShader()->SetSamplerState("ShadowSampler", shadowSampler);
+
+
 		// Add the lights to the pixel shader
-		entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());		
+		entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());
+
+		entities[i].Draw(currentCamera, totalTime);
 	}
 
 	skybox->Draw(currentCamera);
 
-
+	// Unbind shadow depth buffer and shadowsrv
+	ID3D11ShaderResourceView* nullSRVs[128] = {};
+	Graphics::Context->PSSetShaderResources(0, 128, nullSRVs);
 
 
 	ImGui::Render(); // Turns this frame’s UI into renderable triangles
