@@ -63,6 +63,8 @@ public:
 	std::vector<Light> lights;
 	DirectX::XMFLOAT3 ambientColor;
 
+	int blurRadius = 0;
+
 
 private:
 

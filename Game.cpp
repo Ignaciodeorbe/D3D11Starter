@@ -915,7 +915,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	ppPS->SetFloat("pixelWidth", 1.0f / Window::Width());
 	ppPS->SetFloat("pixelHeight", 1.0f / Window::Height());
-	ppPS->SetInt("blurRadius", 10);
+	ppPS->SetInt("blurRadius", blurRadius);
 	ppPS->CopyAllBufferData();
 
 	Graphics::Context->Draw(3, 0); // Draw exactly 3 vertices (one triangle)
@@ -1289,12 +1289,29 @@ void Game::CreateUI()
 			ImGui::PopID();
 
 		}
+		ImGui::Unindent(20.0f);
+
 	}
 
-	// Allows user to shadow map
+	// Allows user to chnage shadow map
 	if (ImGui::CollapsingHeader("Shadow Map"))
 	{
+		ImGui::Indent(20.0f); // Indent to make the data more organized
+
 		ImGui::Image((ImTextureID)shadowSRV.Get(), ImVec2(512, 512));
+		ImGui::Unindent(20.0f);
+
+	}
+
+	// Allows user to change post processing effects
+	if (ImGui::CollapsingHeader("Post Processing"))
+	{
+		ImGui::Indent(20.0f); // Indent to make the data more organized
+
+		ImGui::DragInt("Blur", &blurRadius, 1.0f, 0, 25);
+
+
+		ImGui::Unindent(20.0f);
 	}
 	ImGui::End();
 }
