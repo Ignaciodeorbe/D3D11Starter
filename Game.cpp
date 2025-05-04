@@ -897,6 +897,10 @@ void Game::Draw(float deltaTime, float totalTime)
 		// Add the lights to the pixel shader
 		entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());
 
+		// Set up fog parameters
+		entities[i].GetMaterial()->PixelShader()->SetFloat("fogStartDistance", 5.0f);
+		entities[i].GetMaterial()->PixelShader()->SetFloat("fogEndDistance", 30.0f);
+
 		entities[i].Draw(currentCamera, totalTime);
 	}
 

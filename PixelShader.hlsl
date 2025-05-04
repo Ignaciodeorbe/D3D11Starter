@@ -14,6 +14,9 @@ cbuffer ConstantBuffer : register(b0)
 	float distortionStrength;
 	float roughness;
 
+	float fogStartDistance;
+	float fogEndDistance;
+
 }
 
 Texture2D Albedo : register(t0);
@@ -105,7 +108,13 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	}
 
-	sceneLighting += totalLight;
+	// Create fog effect
+	float dist = distance(cameraPosition, input.worldPosition);
+	float fog = smoothstep(fogStartDistance, fogEndDistance, dist);
+
+	float3 fogColor = { 0.1f, 0.1f, 0.1f };
+
+	sceneLighting += lerp(totalLight, fogColor, fog);
 
 
 	// Just return the input color
