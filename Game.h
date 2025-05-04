@@ -110,5 +110,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> ppRTV; // For rendering
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ppSRV; // For sampling
 
+
 };
 
