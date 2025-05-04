@@ -100,5 +100,15 @@ private:
 	std::shared_ptr<SimpleVertexShader> shadowVS;
 	int shadowMapResolution = 1024; // Ideally a power of 2
 
+
+	// Resources that are shared among all post processes
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> ppSampler;
+	std::shared_ptr<SimpleVertexShader> ppVS;
+
+	// Resources that are tied to a particular post process
+	std::shared_ptr<SimplePixelShader> ppPS;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> ppRTV; // For rendering
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ppSRV; // For sampling
+
 };
 
