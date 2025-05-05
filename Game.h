@@ -65,6 +65,9 @@ public:
 
 	int blurRadius = 0;
 
+	float fogStartDistance = 10.0f;
+	float fogEndDistance = 40.0f;
+
 
 private:
 

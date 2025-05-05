@@ -898,8 +898,8 @@ void Game::Draw(float deltaTime, float totalTime)
 		entities[i].GetMaterial()->PixelShader()->SetData("lights", &lights[0], sizeof(Light) * (int)lights.size());
 
 		// Set up fog parameters
-		entities[i].GetMaterial()->PixelShader()->SetFloat("fogStartDistance", 5.0f);
-		entities[i].GetMaterial()->PixelShader()->SetFloat("fogEndDistance", 30.0f);
+		entities[i].GetMaterial()->PixelShader()->SetFloat("fogStartDistance", fogStartDistance);
+		entities[i].GetMaterial()->PixelShader()->SetFloat("fogEndDistance", fogEndDistance);
 
 		entities[i].Draw(currentCamera, totalTime);
 	}
@@ -1308,11 +1308,16 @@ void Game::CreateUI()
 	}
 
 	// Allows user to change post processing effects
-	if (ImGui::CollapsingHeader("Post Processing"))
+	if (ImGui::CollapsingHeader("Effects"))
 	{
 		ImGui::Indent(20.0f); // Indent to make the data more organized
 
+		// For post process blur effect
 		ImGui::DragInt("Blur", &blurRadius, 1.0f, 0, 25);
+
+		// For changing the fog
+		ImGui::DragFloat("Fog Start Distance", &fogStartDistance, .01f);
+		ImGui::DragFloat("Fog End Distance", &fogEndDistance, .01f);
 
 
 		ImGui::Unindent(20.0f);
